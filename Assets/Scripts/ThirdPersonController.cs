@@ -159,7 +159,8 @@ namespace StarterAssets
             if (_photonView.IsMine)
             {
                 _freeLook.Follow = this.transform;
-                _freeLook.LookAt = this.transform;   
+                _freeLook.LookAt = this.transform;
+                _photonView.OwnershipTransfer = OwnershipOption.Takeover;
             }
         }
 
@@ -172,6 +173,12 @@ namespace StarterAssets
                 JumpAndGravity();
                 GroundedCheck();
                 Move();
+            }
+            
+            var players = PhotonNetwork.PlayerList;
+            foreach (var player in players)
+            {
+                Debug.Log($"{player.NickName}");
             }
         }
 

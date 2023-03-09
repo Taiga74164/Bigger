@@ -1,11 +1,14 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using Newtonsoft.Json.Linq;
 
 public class MainMenuManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TMP_InputField _inputField;
+    [SerializeField] private TMP_InputField _nicknameInputField;
 
     [SerializeField] private GameObject _statusText, _errorText;
     
@@ -53,9 +56,19 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(_dotInterval);
         }
     }
-
+    
+    private string GetRandomName()
+    {
+        var names = JObject.Parse(Resources.Load<TextAsset>("JSON/nicknames").text)["nicknames"]?.ToObject<List<string>>();
+        var rand = names![Random.Range(0, names.Count)];
+        return rand;
+    }
+    
+    public void GenerateNickname() => _nicknameInputField.text = GetRandomName();
+    
     public override void OnJoinedRoom()
     {
+        PhotonNetwork.NickName = string.IsNullOrEmpty(_nicknameInputField.text) ? GetRandomName() : _nicknameInputField.text;
         StopCoroutine(DotAnimation());
         PhotonNetwork.LoadLevel("Playground");
     }
@@ -71,7 +84,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     {
         _errorText.SetActive(true);
         yield return new WaitForSeconds(2);
-        
         _errorText.SetActive(false);
     }
     
