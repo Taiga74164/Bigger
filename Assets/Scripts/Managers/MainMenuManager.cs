@@ -15,12 +15,18 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     
     public void CreateRoom()
     {
+        if (string.IsNullOrEmpty(_inputField.text))
+            return;
+        
         OnConnect();
         PhotonNetwork.CreateRoom(_inputField.text);
     }
 
     public void JoinRoom()
     {
+        if (string.IsNullOrEmpty(_inputField.text))
+            return;
+        
         OnConnect();
         PhotonNetwork.JoinRoom(_inputField.text);
     }
