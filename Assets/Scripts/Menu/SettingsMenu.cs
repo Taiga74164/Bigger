@@ -56,12 +56,12 @@ public class SettingsMenu : Menu<SettingsMenu>
         _resolutionDropdown.RefreshShownValue();
         
         // Load settings
-        _masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
-        _brightness = PlayerPrefs.GetFloat("Brightness", 1f);
-        _vSync = PlayerPrefs.GetInt("VSync", 1) == 1;
-        _resolutionIndex = PlayerPrefs.GetInt("ResolutionIndex", currentResolutionIndex);
-        _windowModeIndex = PlayerPrefs.GetInt("WindowModeIndex", 0);
-        _fpsIndex = PlayerPrefs.GetInt("FPSIndex", 0);
+        _masterVolume = PlayerPrefsManager.MasterVolume;
+        _brightness = PlayerPrefsManager.Brightness;
+        _vSync = PlayerPrefsManager.VSync;
+        _resolutionIndex = PlayerPrefsManager.ResolutionIndex;
+        _windowModeIndex = PlayerPrefsManager.WindowModeIndex;
+        _fpsIndex = PlayerPrefsManager.FPSIndex;
         
         UpdateUIElements();
         UpdateSettings();
@@ -70,7 +70,7 @@ public class SettingsMenu : Menu<SettingsMenu>
     /// <summary>
     /// Adjusts the master volume.
     /// </summary>
-    /// <param name="value">Volume value from 0 - 10.</param>
+    /// <param name="value">Volume value from 0 to 10.</param>
     public void SetVolume(float value)
     {
         _masterVolume = value;
@@ -81,7 +81,7 @@ public class SettingsMenu : Menu<SettingsMenu>
     /// <summary>
     /// Adjusts the brightness.
     /// </summary>
-    /// <param name="value">Brightness value from 0 - 1.</param>
+    /// <param name="value">Brightness value from 0 to 1.</param>
     public void SetBrightness(float value)
     {
         _brightness = value;
@@ -132,10 +132,10 @@ public class SettingsMenu : Menu<SettingsMenu>
         switch (_windowModeIndex)
         {
             case 0:
-                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+                Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
                 break;
             case 1:
-                Screen.fullScreenMode = FullScreenMode.MaximizedWindow;
+                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
                 break;
             case 2:
                 Screen.fullScreenMode = FullScreenMode.Windowed;
@@ -166,13 +166,13 @@ public class SettingsMenu : Menu<SettingsMenu>
     
     private void SaveSettings()
     {
-        PlayerPrefs.SetFloat("MasterVolume", _masterVolume);
-        PlayerPrefs.SetFloat("Brightness", _brightness);
-        PlayerPrefs.SetInt("VSync", _vSync ? 1 : 0);
-        PlayerPrefs.SetInt("ResolutionIndex", _resolutionIndex);
-        PlayerPrefs.SetInt("WindowModeIndex", _windowModeIndex);
-        PlayerPrefs.SetInt("FPSIndex", _fpsIndex);
-        PlayerPrefs.Save();
+        PlayerPrefsManager.MasterVolume = _masterVolume;
+        PlayerPrefsManager.Brightness = _brightness;
+        PlayerPrefsManager.VSync = _vSync;
+        PlayerPrefsManager.ResolutionIndex = _resolutionIndex;
+        PlayerPrefsManager.WindowModeIndex = _windowModeIndex;
+        PlayerPrefsManager.FPSIndex = _fpsIndex;
+        PlayerPrefsManager.Save();
     }
     
     public override void Open()
