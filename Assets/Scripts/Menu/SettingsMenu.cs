@@ -59,7 +59,10 @@ public class SettingsMenu : Menu<SettingsMenu>
             
             // Check if this is the current resolution
             if (_resolutions[i].width == Screen.currentResolution.width && _resolutions[i].height == Screen.currentResolution.height)
+            {
                 currentResolutionIndex = i;
+                Debug.Log($"Current resolution found: {option}, index: {i}, cur: {currentResolutionIndex}");
+            }
             
             _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(option));
         }

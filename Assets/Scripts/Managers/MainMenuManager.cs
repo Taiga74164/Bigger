@@ -1,20 +1,21 @@
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Newtonsoft.Json.Linq;
+using Photon.Realtime;
 using Random = UnityEngine.Random;
 
 public class MainMenuManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TMP_InputField _inputField;
     [SerializeField] private TMP_InputField _nicknameInputField;
-
-    [SerializeField] private GameObject _statusText, _errorText;
     
-    private float _dotInterval = 0.5f;
-    private float _timer = 0f;
+    [SerializeField] private TextMeshProUGUI _statusText, _errorText;
+    
+    private readonly float _dotInterval = 0.5f;
     private int _numDots = 0;
     
     public void CreateRoom()
@@ -25,7 +26,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         OnConnect();
         PhotonNetwork.CreateRoom(_inputField.text);
     }
-
+    
     public void JoinRoom()
     {
         if (string.IsNullOrEmpty(_inputField.text))
@@ -34,12 +35,12 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         OnConnect();
         PhotonNetwork.JoinRoom(_inputField.text);
     }
-
+    
     private void OnConnect()
     {
         _inputField.gameObject.SetActive(false);
-        _statusText.SetActive(true);
-        _errorText.SetActive(false);
+        _statusText.gameObject.SetActive(true);
+        _errorText.gameObject.SetActive(false);
         StartCoroutine(DotAnimation());
     }    
     
@@ -53,7 +54,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
             {
                 dots += ".";
             }
-            _statusText.GetComponent<TextMeshProUGUI>().text  = "Connecting" + dots;
+            _statusText.text  = "Connecting" + dots;
             yield return new WaitForSeconds(_dotInterval);
         }
     }
@@ -73,19 +74,20 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         StopCoroutine(DotAnimation());
         PhotonNetwork.LoadLevel("Playground");
     }
-
+    
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         _statusText.gameObject.SetActive(false);
-        StartCoroutine(ShowError());
+        StartCoroutine(ShowError(message));
         _inputField.gameObject.SetActive(true);
     }
     
-    private IEnumerator ShowError()
+    private IEnumerator ShowError(string message)
     {
-        _errorText.SetActive(true);
+        _errorText.text = message;
+        _errorText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2);
-        _errorText.SetActive(false);
+        _errorText.gameObject.SetActive(false);
     }
     
     public void OnQuit()
@@ -95,5 +97,12 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 #else
         Application.Quit();
 #endif
+    }
+    
+    public void Update()
+    {
+        Debug.Log($"{Screen.currentResolution.width + " x " + Screen.currentResolution.height}");
+        Debug.Log($"ResolutionIndex {PlayerPrefsManager.ResolutionIndex}");
+        Debug.Log($"FPSIndex {PlayerPrefsManager.FPSIndex}");
     }
 }
