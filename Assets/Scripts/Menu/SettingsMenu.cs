@@ -42,27 +42,30 @@ public class SettingsMenu : Menu<SettingsMenu>
         // Get all available resolutions
         _resolutions = Screen.resolutions;
         _resolutionDropdown.ClearOptions();
-        List<string> options = new List<string>();
+        
+        // Create a set to avoid duplicates
+        HashSet<string> options = new HashSet<string>();
+        
+        // Find the current resolution and set it as the default
         int currentResolutionIndex = 0;
         for (int i = 0; i < _resolutions.Length; i++)
         {
             var option = _resolutions[i].width + " x " + _resolutions[i].height;
+            if (options.Contains(option))
+                continue;
+            
+            // Add the option to the set
             options.Add(option);
+            
+            // Check if this is the current resolution
             if (_resolutions[i].width == Screen.currentResolution.width && _resolutions[i].height == Screen.currentResolution.height)
                 currentResolutionIndex = i;
+            
+            _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(option));
         }
-        _resolutionDropdown.AddOptions(options);
-        _resolutionDropdown.value = currentResolutionIndex;
-        _resolutionDropdown.RefreshShownValue();
+        _resolutionDropdown.SetValueWithoutNotify(currentResolutionIndex);
         
-        // Load settings
-        _masterVolume = PlayerPrefsManager.MasterVolume;
-        _brightness = PlayerPrefsManager.Brightness;
-        _vSync = PlayerPrefsManager.VSync;
-        _resolutionIndex = PlayerPrefsManager.ResolutionIndex;
-        _windowModeIndex = PlayerPrefsManager.WindowModeIndex;
-        _fpsIndex = PlayerPrefsManager.FPSIndex;
-        
+        LoadSettings();
         UpdateUIElements();
         UpdateSettings();
     }
@@ -143,7 +146,17 @@ public class SettingsMenu : Menu<SettingsMenu>
         }
         SaveSettings();
     }
-
+    
+    private void LoadSettings()
+    {
+        _masterVolume = PlayerPrefsManager.MasterVolume;
+        _brightness = PlayerPrefsManager.Brightness;
+        _vSync = PlayerPrefsManager.VSync;
+        _resolutionIndex = PlayerPrefsManager.ResolutionIndex;
+        _windowModeIndex = PlayerPrefsManager.WindowModeIndex;
+        _fpsIndex = PlayerPrefsManager.FPSIndex;
+    }
+    
     private void UpdateUIElements()
     {
         _masterVolumeSlider.value = _masterVolume;

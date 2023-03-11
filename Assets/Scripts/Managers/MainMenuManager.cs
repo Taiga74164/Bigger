@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Newtonsoft.Json.Linq;
+using Random = UnityEngine.Random;
 
 public class MainMenuManager : MonoBehaviourPunCallbacks
 {
