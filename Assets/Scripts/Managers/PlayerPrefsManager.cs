@@ -40,5 +40,11 @@ public static class PlayerPrefsManager
         set => PlayerPrefs.SetInt("FPSIndex", value);
     }
     
+    public static bool FirstLaunch
+    {
+        get => PlayerPrefs.GetInt("FirstLaunch", 1) == 1;
+        set => PlayerPrefs.SetInt("FirstLaunch", value ? 1 : 0);
+    }
+    
     public static void Save() => PlayerPrefs.Save();
 }
