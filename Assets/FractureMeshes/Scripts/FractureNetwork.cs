@@ -75,7 +75,7 @@ public class FractureNetwork : MonoBehaviour
             }
 
             //determine which blocks are touching the ground
-            int layerMask = 1 << 3;
+            int layerMask = 1 << 9;
             RaycastHit _hit;
             if (Physics.Raycast(cell.GetComponent<MeshRenderer>().bounds.center, Vector3.down, out _hit, cell.GetComponent<MeshRenderer>().bounds.size.y / 2f, layerMask))
             {
@@ -84,8 +84,6 @@ public class FractureNetwork : MonoBehaviour
                 {
                     nodeDict[cell.GetComponent<SubFracture>()].isFoundation = true;
                     foundation.Add(nodeDict[cell.GetComponent<SubFracture>()]);
-                    cell.GetComponent<SubFracture>().isFoundation = true;
-                    
                 }
             }
 
@@ -114,6 +112,10 @@ public class FractureNetwork : MonoBehaviour
             foreach (FractureNetworkNode node in network)
             {
                 node.subFracture._node = node;
+                if (node.isFoundation)
+                {
+                    node.subFracture.GetComponent<MeshRenderer>().material.color = Color.green;
+                }
             }
 
         }
@@ -236,18 +238,17 @@ public class FractureNetwork : MonoBehaviour
     {
         while(true)
         {
-            Debug.Log(network.Count);
             for (int i =0; i< network.Count; i ++)
             {
-                if (!network[i].isBroken)
+                if (!network[i].isBroken) //ignore broken pieces
                 {
-                    if (!PathTo(network[i], network[i].foundationTarget))
+                    if (!PathTo(network[i], network[i].foundationTarget)) //try to find path to foundation
                     {
-                        network[i].subFracture.Break();
+                        network[i].subFracture.Break(); //if no path is found, break
                     }
                 }
             }
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }
