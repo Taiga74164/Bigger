@@ -41,6 +41,8 @@ public class SubFracture : MonoBehaviour
             //if you have a fractured mesh it is likely the pieces will be convex
             _collider.convex = true;
         }
+
+
     }
 
     public void Break()
@@ -58,22 +60,23 @@ public class SubFracture : MonoBehaviour
             }
 
             _node.neighbours.Clear(); //clear this node's neighbours
-
-            _network.StartCollapse(); //if the fractured mesh is not already collapsing, start collapsing
-        }
+            gameObject.GetComponent<MeshRenderer>().material.color = Color.red; //set mesh to red if broken
+        }  
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if(_node.isBroken) return;
         if (collision == null) return;
-        if (_node.isFoundation) return;
+        //if (_node.isFoundation) return;
 
         if (collision.impulse.magnitude >10.0f) //if collision is of sufficient force
         {
             Break();
+            _network.StartCollapse(); //if the fractured mesh is not already collapsing, start collapsing
+            
         }
-        gameObject.GetComponent<MeshRenderer>().material.color = Color.red; //set mesh to red if broken
+        
 
     }
 
