@@ -14,6 +14,12 @@ public class FractureNetwork : MonoBehaviour
     bool isCollapsing;
     bool hasCollapsed = false;
 
+    [SerializeField]
+    [Tooltip("Time in seconds after a piece of rubble collides with the ground and when it is culled.")]
+    private float rubbleCullDelay = 15.0f;
+
+    //Async
+    CancellationTokenSource cancellationTokenSource;
 
     [Header("Debug")]
     public bool DebugNetwork = false;
@@ -23,6 +29,7 @@ public class FractureNetwork : MonoBehaviour
     private void Start()
     {
         InitializeFractureNetwork();
+        cancellationTokenSource = new CancellationTokenSource();
     }
 
     private void Update()
@@ -115,7 +122,9 @@ public class FractureNetwork : MonoBehaviour
             //store reference to network node on Subfracture monobehaviour
             foreach (FractureNetworkNode node in network)
             {
+
                 node.subFracture._node = node;
+                node.subFracture._cullDelay = rubbleCullDelay;
                 if (node.isFoundation)
                 {
                     node.subFracture.GetComponent<MeshRenderer>().material.color = Color.green;
@@ -192,17 +201,24 @@ public class FractureNetwork : MonoBehaviour
 
     public async void StartCollapse()
     {
-        
-        if (!isCollapsing && !hasCollapsed)
+        if (!isCollapsing)
         {
             Debug.Log("building has started collapsing");
             isCollapsing = true;
-
-            await Task.Run(() => CheckForCollapse());
-            
-            
-            //Debug.Log("building is done collapsing");
+            while (isCollapsing)
+            {
+                await Task.Run(() => BreakFloatingNodes(), cancellationTokenSource.Token);
+                if (hasCollapsed)
+                {
+                    cancellationTokenSource.Cancel();
+                    break;
+                }
+            }
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Dispose();
         }
+
+        //terminate async task
     }
 
     #region Debug
@@ -229,22 +245,36 @@ public class FractureNetwork : MonoBehaviour
     }
     #endregion
 
-    public async void CheckForCollapse()
+    public void BreakFloatingNodes()
     {
-        List<FractureNetworkNode> _localNetwork = network;
-        while (isCollapsing)
+        if(hasCollapsed)
         {
-            for (int i = 0; i < _localNetwork.Count; i++)
+            Debug.Log("async task cancelled");
+            cancellationTokenSource.Cancel();
+        }
+
+        foreach (FractureNetworkNode node in network)
+        {
+            if (node.isBroken) continue; //ignore broken nodes
+            if (PathTo(node, node.foundationTarget)) continue; //if connected to foundation continue   
+            node.isBroken = true; //set all that aren't already broken or connected to the foundation to true     
+        }
+
+        //check if whole building has collapsed
+        hasCollapsed = true;
+        foreach (FractureNetworkNode node in network)
+        {
+            if (!node.isBroken && !node.isFoundation) //if there is an unbroken part of the mesh and that node is not a foundation piece
             {
-                if (_localNetwork[i].isBroken)
-                {
-                    if (!PathTo(_localNetwork[i], _localNetwork[i].foundationTarget)) //can find path to foundation?
-                    {
-                        _localNetwork[i].subFracture.Break();
-                    }
-                }
-                await Task.Yield();
+                hasCollapsed = false;
+                break;
             }
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        cancellationTokenSource?.Cancel();
+        cancellationTokenSource?.Dispose();
     }
 }

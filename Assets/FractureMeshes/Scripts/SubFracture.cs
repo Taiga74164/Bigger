@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -13,9 +14,20 @@ public class SubFracture : MonoBehaviour
 
     MeshCollider _collider;
 
+    //fracture network
     public FractureNetwork _network;
-
     public FractureNetworkNode _node;
+
+    //culling
+    public float _cullDelay = 100.0f;
+
+    public float CullDelay
+    {
+        get { return _cullDelay; }
+        set { _cullDelay = value; }
+    }
+
+    private bool bCull = false;
 
     void Start()
     {
@@ -55,34 +67,40 @@ public class SubFracture : MonoBehaviour
         if (_node.isBroken)
         {
             _rb.isKinematic = false;
-            _node.isBroken = true; //don't use this node for future pathfinding
-
-            //_network.network.Remove(_node); //this node will not check for grounding or play any part in structural evaluation
-
-            foreach (FractureNetworkNode node in _node.neighbours) //remove from neighbors' neighbour list, optimizes further pathfinding
-            {
-                node.neighbours.Remove(_node);
-            }
-
-            _node.neighbours.Clear(); //clear this node's neighbours
             gameObject.GetComponent<MeshRenderer>().material.color = Color.red; //set mesh to red if broken
         }  
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(_node.isBroken) return;
-        if (collision == null) return;
-        //if (_node.isFoundation) return;
-
-        if (collision.impulse.magnitude >2.5f) //if collision is of sufficient force
+        if (!_node.isBroken)
         {
-            _node.isBroken = true;
-            _network.StartCollapse(); //if the fractured mesh is not already collapsing, start collapsing
+            if (collision == null) return;
+            //if (_node.isFoundation) return;
+
+            if (collision.impulse.magnitude > 2.5f) //if collision is of sufficient force
+            {
+                _node.isBroken = true;
+                _network.StartCollapse(); //if the fractured mesh is not already collapsing, start collapsing
+
+                return;
+            }
         }
-        
+
+        if (_node.isBroken && collision.gameObject.tag == "Ground")
+        {
+            Debug.Log("collided with ground");
+            StartCoroutine(CullWithDelay());
+        }
 
     }
+    
 
+    IEnumerator CullWithDelay()
+    {
 
+        yield return new WaitForSeconds(_cullDelay);
+        Destroy(gameObject);
+
+    }
 }
