@@ -946,6 +946,11 @@ PrefabInstance:
       propertyPath: m_CollisionDetection
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2025358577708413744, guid: d3ed3ea51180bf3478ff7dbaddd02953,
+        type: 3}
+      propertyPath: rubbleCullTime
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2055408662370849312, guid: d3ed3ea51180bf3478ff7dbaddd02953,
         type: 3}
       propertyPath: m_Convex
@@ -4634,6 +4639,16 @@ PrefabInstance:
       propertyPath: m_CollisionDetection
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2025358577708413744, guid: d3ed3ea51180bf3478ff7dbaddd02953,
+        type: 3}
+      propertyPath: rubbleCullTime
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025358577708413744, guid: d3ed3ea51180bf3478ff7dbaddd02953,
+        type: 3}
+      propertyPath: rubbleCullDelay
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 2055408662370849312, guid: d3ed3ea51180bf3478ff7dbaddd02953,
         type: 3}
       propertyPath: m_Convex
@@ -7792,6 +7807,16 @@ PrefabInstance:
       propertyPath: m_CollisionDetection
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2025358577708413744, guid: d3ed3ea51180bf3478ff7dbaddd02953,
+        type: 3}
+      propertyPath: rubbleCullTime
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2025358577708413744, guid: d3ed3ea51180bf3478ff7dbaddd02953,
+        type: 3}
+      propertyPath: rubbleCullDelay
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 2055408662370849312, guid: d3ed3ea51180bf3478ff7dbaddd02953,
         type: 3}
       propertyPath: m_Convex
@@ -10473,15 +10498,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2042886577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2042886572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56632a163848feb41b9950bce7776c85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
