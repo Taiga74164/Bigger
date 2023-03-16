@@ -45,14 +45,19 @@ public class SubFracture : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        Break();
+    }
+
     public void Break()
     {
-        if (!_node.isBroken)
+        if (_node.isBroken)
         {
             _rb.isKinematic = false;
             _node.isBroken = true; //don't use this node for future pathfinding
 
-            _network.network.Remove(_node); //this node will not check for grounding or play any part in structural evaluation
+            //_network.network.Remove(_node); //this node will not check for grounding or play any part in structural evaluation
 
             foreach (FractureNetworkNode node in _node.neighbours) //remove from neighbors' neighbour list, optimizes further pathfinding
             {
@@ -70,11 +75,10 @@ public class SubFracture : MonoBehaviour
         if (collision == null) return;
         //if (_node.isFoundation) return;
 
-        if (collision.impulse.magnitude >10.0f) //if collision is of sufficient force
+        if (collision.impulse.magnitude >2.5f) //if collision is of sufficient force
         {
-            Break();
+            _node.isBroken = true;
             _network.StartCollapse(); //if the fractured mesh is not already collapsing, start collapsing
-            
         }
         
 

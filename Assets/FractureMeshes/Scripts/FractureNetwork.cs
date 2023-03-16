@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 
 public class FractureNetwork : MonoBehaviour
 {
+
     #region Params
     int _nodeCount;
     public List<FractureNetworkNode> network;
     List<FractureNetworkNode> foundation;
     bool isCollapsing;
+    bool hasCollapsed = false;
 
 
     [Header("Debug")]
@@ -186,12 +190,18 @@ public class FractureNetwork : MonoBehaviour
 
     #endregion
 
-    public void StartCollapse()
+    public async void StartCollapse()
     {
-        if (!isCollapsing)
+        
+        if (!isCollapsing && !hasCollapsed)
         {
-            StartCoroutine(CheckIntegrity());
-            isCollapsing = true;    
+            Debug.Log("building has started collapsing");
+            isCollapsing = true;
+
+            await Task.Run(() => CheckForCollapse());
+            
+            
+            //Debug.Log("building is done collapsing");
         }
     }
 
@@ -219,36 +229,22 @@ public class FractureNetwork : MonoBehaviour
     }
     #endregion
 
-    public void CheckForCollapse()
+    public async void CheckForCollapse()
     {
-        for (int i = 0; i < network.Count; i++)
+        List<FractureNetworkNode> _localNetwork = network;
+        while (isCollapsing)
         {
-            if (!network[i].isBroken)
+            for (int i = 0; i < _localNetwork.Count; i++)
             {
-                if (!PathTo(network[i], network[i].foundationTarget))
+                if (_localNetwork[i].isBroken)
                 {
-                    network[i].subFracture.Break();
-                }
-            }
-
-        }
-    }
-
-    IEnumerator CheckIntegrity()
-    {
-        while(true)
-        {
-            for (int i =0; i< network.Count; i ++)
-            {
-                if (!network[i].isBroken) //ignore broken pieces
-                {
-                    if (!PathTo(network[i], network[i].foundationTarget)) //try to find path to foundation
+                    if (!PathTo(_localNetwork[i], _localNetwork[i].foundationTarget)) //can find path to foundation?
                     {
-                        network[i].subFracture.Break(); //if no path is found, break
+                        _localNetwork[i].subFracture.Break();
                     }
                 }
+                await Task.Yield();
             }
-            yield return new WaitForSeconds(0.5f);
         }
     }
 }
