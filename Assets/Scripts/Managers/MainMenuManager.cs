@@ -101,8 +101,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     
     public void Update()
     {
-        Debug.Log($"{Screen.currentResolution.width + " x " + Screen.currentResolution.height}");
+        Debug.Log($"Screen Current Resolution: {Screen.currentResolution.width + " x " + Screen.currentResolution.height}");
         Debug.Log($"ResolutionIndex {PlayerPrefsManager.ResolutionIndex}");
-        Debug.Log($"FPSIndex {PlayerPrefsManager.FPSIndex}");
     }
 }

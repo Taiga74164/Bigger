@@ -59,15 +59,7 @@ public class SettingsMenu : Menu<SettingsMenu>
             
             // Check if this is the current resolution
             if (_resolutions[i].width == Screen.currentResolution.width && _resolutions[i].height == Screen.currentResolution.height)
-            {
                 currentResolutionIndex = i;
-                if (PlayerPrefsManager.FirstLaunch)
-                {
-                    PlayerPrefsManager.ResolutionIndex = currentResolutionIndex;
-                    PlayerPrefsManager.Save();
-                    PlayerPrefsManager.FirstLaunch = false;
-                }
-            }
             
             _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(option));
         }

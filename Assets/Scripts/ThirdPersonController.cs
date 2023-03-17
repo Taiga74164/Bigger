@@ -1,5 +1,6 @@
 ﻿using Cinemachine;
 using Photon.Pun;
+using TMPro;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -18,6 +19,11 @@ namespace StarterAssets
 		[SerializeField]
 		private PhotonView _photonView;
 		
+        [Header("Attributes")]
+        public EntityAttributeHolder Attributes;
+        [SerializeField] private TMP_Text _name;
+        [SerializeField] private TMP_Text _size;
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
@@ -175,11 +181,16 @@ namespace StarterAssets
                 Move();
             }
             
-            var players = PhotonNetwork.PlayerList;
-            foreach (var player in players)
-            {
-                Debug.Log($"{player.NickName}");
-            }
+            // var players = PhotonNetwork.PlayerList;
+            // foreach (var player in players)
+            // {
+            //     Debug.Log($"{player.NickName}");
+            // }
+            
+            _name.text = _photonView.Owner.NickName;
+            Attributes.Name.SetValue(_photonView.Owner.NickName);
+            // Debug.Log($"GetValue: {Attributes.Name.GetValue()}");
+            // Debug.Log($"_photonView.Owner.NickName: {_photonView.Owner.NickName}");
         }
 
         private void LateUpdate()
