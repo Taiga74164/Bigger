@@ -36,16 +36,18 @@ public class PlayerController : MonoBehaviour
     public float Gravity = -9.81f;
     public float RotationSpeed = 10f;
     public float MoveSpeed = 5.0f;
-    // public float SprintSpeed = 10.0f; // Do we need sprinting for our game?
+    // public float SprintSpeed = 10.0f; // If implemented should we have a stamina system?
+    public float DashDistance = 50.0f;
+    public float DashCooldown = 2.0f;
     
     #endregion
     
     #region Input Actions
     
-    private InputAction _movement, _jump, _attack;
-
+    private InputAction _movement, _jump, _dash, _attack;
+    
     #endregion
-
+    
     #region ANIMATION
     
     private int _animIDSpeed;
@@ -62,12 +64,13 @@ public class PlayerController : MonoBehaviour
     private Vector3 _velocity = Vector3.zero;
     private Vector2 _moveInput;
     private bool _isMoving, _canMove = true;
+    private bool _canDash = true;
     private float _rotationTime = 0.0f;
     
     #endregion
     
     public float GetSize() => (float) Attributes.Size.GetValue();
-
+    
     private void Awake()
     {
         if (MainCamera == null)
@@ -84,12 +87,14 @@ public class PlayerController : MonoBehaviour
         // Set up input action references.
         _movement = InputManager.Move;
         _jump = InputManager.Jump;
+        _dash = InputManager.Dash;
         _attack = InputManager.Attack;
-
+        
         // Listen for input actions.
         _jump.performed += Jump;
+        _dash.performed += Dash;
         _attack.performed += Attack;
-
+        
         AssignAnimationIDs();
         
         if (_photonView.IsMine)
@@ -110,8 +115,9 @@ public class PlayerController : MonoBehaviour
             UpdatePosition();
             HandleVelocity();
             HandleRotation();
+            HandleDash();
             
-            Debug.Log($"{GetSize()}");
+            Debug.Log($"Size: {GetSize()}");
         }
         
         // Player attributes.
@@ -143,6 +149,26 @@ public class PlayerController : MonoBehaviour
             _velocity.y += Mathf.Sqrt(JumpHeight * -2f * Gravity);
         // ToDo:
         // Add jump animations.
+    }
+    
+    /// <summary>
+    /// Invoked when the dash action is performed.
+    /// </summary>
+    /// <param name="context">The input context.</param>
+    private void Dash(InputAction.CallbackContext context)
+    {
+        if (!Controller.isGrounded)
+            return;
+        
+        if (!_canDash)
+            return;
+        
+        _velocity += transform.forward * DashDistance;
+        _canDash = false;
+        
+        // ToDo:
+        // 1. Add dash animations.
+        // 2. Use lerp to smooth out the dash maybe?
     }
     
     /// <summary>
@@ -233,6 +259,19 @@ public class PlayerController : MonoBehaviour
         // Rotate the player transform.
         PlayerTransform.rotation = Quaternion.Lerp(PlayerTransform.rotation,
             rotation, Time.deltaTime * RotationSpeed);
+    }
+    
+    private void HandleDash()
+    {
+        if (_canDash)
+            return;
+        
+        DashCooldown -= Time.deltaTime;
+        if (!(DashCooldown <= 0))
+            return;
+        
+        DashCooldown = 2.0f;
+        _canDash = true;
     }
     
     #endregion

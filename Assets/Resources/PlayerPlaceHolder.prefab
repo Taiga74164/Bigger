@@ -1497,6 +1497,8 @@ MonoBehaviour:
   Gravity: -9.81
   RotationSpeed: 10
   MoveSpeed: 5
+  DashDistance: 50
+  DashCooldown: 2
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0

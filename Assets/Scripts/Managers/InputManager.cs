@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     // Player actions.
     public static InputAction Move;
     public static InputAction Jump;
+    public static InputAction Dash;
     public static InputAction Attack;
 
     // Interface actions.
@@ -26,6 +27,7 @@ public class InputManager : MonoBehaviour
         // Update the player actions.
         Move = _actions.Player.Move;
         Jump = _actions.Player.Jump;
+        Dash = _actions.Player.Dash;
         Attack = _actions.Player.Attack;
         // Update the interface actions.
         Cursor = _actions.Interface.ShowCursor;
