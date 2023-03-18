@@ -1142,9 +1142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df51ac44c7e94d4089c981c15a6f6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lookAt: {fileID: 0}
-  invert: 1
-  mainCamera: 1
+  _lookAt: {fileID: 0}
+  Invert: 1
+  MainCamera: 1
 --- !u!1 &4241624010127815633
 GameObject:
   m_ObjectHideFlags: 0

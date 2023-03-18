@@ -7,15 +7,15 @@ using UnityEngine;
 /// </summary>
 public class LookAt : MonoBehaviour
 {
-    public Transform lookAt;
-    public bool invert;
-    public bool mainCamera;
+    [SerializeField] private Transform _lookAt;
+    public bool Invert;
+    public bool MainCamera;
 
     private void Start()
     {
         // Look at the main camera if no object is specified.
-        if (mainCamera)
-            lookAt = GameObject.FindWithTag("MainCamera").transform;
+        if (MainCamera)
+            _lookAt = GameObject.FindWithTag("MainCamera").transform;
     }
 
     private void Update()
@@ -23,7 +23,7 @@ public class LookAt : MonoBehaviour
         try
         {
             // Look at the specified transform.
-            transform.LookAt((invert ? 2 : 1) * transform.position - lookAt.position);
+            transform.LookAt((Invert ? 2 : 1) * transform.position - _lookAt.position);
         }
         catch (UnassignedReferenceException) { }
     }
