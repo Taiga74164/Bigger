@@ -68,8 +68,9 @@ public class PlayerController : MonoBehaviour
     private float _rotationTime = 0.0f;
     
     #endregion
-    
-    public float GetSize() => (float) Attributes.Size.GetValue();
+
+    public float GetSize() => (float)Attributes.Size.GetValue();
+    public void SetSize(float value) => Attributes.Size.SetValue(value);
     
     private void Awake()
     {
@@ -116,13 +117,11 @@ public class PlayerController : MonoBehaviour
             HandleVelocity();
             HandleRotation();
             HandleDash();
-            
-            Debug.Log($"Size: {GetSize()}");
         }
         
         // Player attributes.
-        _name.text = _photonView.Owner.NickName;
-        Attributes.Name.SetValue(_photonView.Owner.NickName);
+        _name.SetText(_photonView.Owner.NickName);
+        _size.SetText("Size: " + GetSize().ToString());
     }
     
     private void AssignAnimationIDs()
