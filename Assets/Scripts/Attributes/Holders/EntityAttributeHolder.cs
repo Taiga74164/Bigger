@@ -29,8 +29,8 @@ public class EntityAttributeHolder : AttributeHolder
     protected void ApplyAttributes()
     {
         // Apply references.
-        NameText.text = Name.GetValue() as string;
-        SizeText.text = Size.GetValue() as string;
+        NameText.SetText(Name.GetValue().ToString());;
+        SizeText.SetText("Size: " + Size.GetValue().ToString());
         
         // Add attributes.
         CreateAttribute(Name);
