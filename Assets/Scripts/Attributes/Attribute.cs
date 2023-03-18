@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 
 /// <summary>
+/// List of attribute IDs.
+/// </summary>
+public static class Attributes
+{
+    public const string Name = "entity.name";
+    public const string Size = "entity.size";
+}
+
+/// <summary>
 /// Abstract class for an attribute.
 /// </summary>
 [Serializable]
 public class Attribute
 {
-    /// <summary>
-    /// List of attribute IDs.
-    /// </summary>
-    public const string NameAttribute = "entity.name";
-    public const string SizeAttribute = "entity.size";
-    
     /// <summary>
     /// ID of this attribute.
     /// </summary>
@@ -32,7 +35,7 @@ public class Attribute
     /// <summary>
     /// Returns the attribute's ID.
     /// </summary>
-    /// <returns>A type of Attribute.</returns>
+    /// <returns>A type of <see cref="Attributes"/>.</returns>
     public string GetId()
     {
         return _id;

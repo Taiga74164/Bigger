@@ -18,8 +18,8 @@ public class EntityAttributeHolder : AttributeHolder
     #region Entity Attributes
 
     [Header("Attributes")]
-    public Attribute Name = new(Attribute.NameAttribute, "Entity");
-    public Attribute Size = new(Attribute.SizeAttribute, 1.0f);
+    public NameAttribute Name = new("Entity");
+    public SizeAttribute Size = new(1.0f);
 
     #endregion
 

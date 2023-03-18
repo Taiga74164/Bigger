@@ -111,6 +111,8 @@ public class PlayerController : MonoBehaviour
             UpdatePosition();
             HandleVelocity();
             HandleRotation();
+            
+            Debug.Log($"{GetSize()}");
         }
         
         // Player attributes.
