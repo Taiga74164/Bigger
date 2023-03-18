@@ -4,16 +4,64 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class LoadingSceneManager : MonoBehaviourPunCallbacks
 {
+    [HideInInspector]
+    public static Dictionary<string, RoomInfo> CachedRoomList = new Dictionary<string, RoomInfo>();
+    
+    #region Events
+    
     private void Awake()
     {
         InitializeResolution();
+        
+        // Make sure this object is not destroyed when loading a new scene because we need the cached room list.
+        DontDestroyOnLoad(this);
     }
+    
+    private void Start() => PhotonNetwork.ConnectUsingSettings();
+    
+    #endregion
+    
+    #region Photon Callbacks
+    
+    public override void OnConnectedToMaster()
+    {
+        // Do stuff here. Can insert a loading screen, Game Title, etc.
+        PhotonNetwork.JoinLobby();
+    }
+    
+    public override void OnJoinedLobby()
+    {
+        SceneManager.LoadScene("MainMenu");
+        
+        // Destroy all children of this object to prevent UI from appearing in the next scene.
+        foreach (var child in transform.GetComponentsInChildren<Transform>())
+            if (child != transform)
+                Destroy(child.gameObject);
+    }
+    
+    /// <summary>
+    /// https://doc.photonengine.com/pun/v2/lobby-and-matchmaking/matchmaking-and-lobby#default_lobby_type
+    /// </summary>
+    /// <param name="roomList">List of available rooms.</param>
+    public override void OnRoomListUpdate(List<RoomInfo> roomList) => UpdateCachedRoomList(roomList);
+    
+    public override void OnLeftLobby() => CachedRoomList.Clear();
+    
+    public override void OnDisconnected(DisconnectCause cause) => CachedRoomList.Clear();
+    
+    #endregion
+    
+    #region Methods
     
     private void InitializeResolution()
     {
+        // ToDo:
+        // https://github.com/Taiga74164/Bigger/issues/2
+        
         if (PlayerPrefsManager.FirstLaunch)
         {
             PlayerPrefsManager.ResolutionIndex = GetMatchingResolutionIndex();
@@ -36,9 +84,9 @@ public class LoadingSceneManager : MonoBehaviourPunCallbacks
         
         HashSet<string> options = new HashSet<string>();
         
-        for (int i = 0; i < resolutions.Length; i++)
+        foreach (var t in resolutions)
         {
-            var option = resolutions[i].width + " x " + resolutions[i].height;
+            var option = t.width + " x " + t.height;
             if (options.Contains(option))
                 continue;
             
@@ -52,13 +100,14 @@ public class LoadingSceneManager : MonoBehaviourPunCallbacks
         return 0;
     }
     
-    void Start() => PhotonNetwork.ConnectUsingSettings();
-    
-    public override void OnConnectedToMaster()
+    private void UpdateCachedRoomList(List<RoomInfo> roomList)
     {
-        // Do stuff here. Can insert a loading screen, Game Title, etc.
-        PhotonNetwork.JoinLobby();
+        foreach (var room in roomList)
+            if (room.RemovedFromList)
+                CachedRoomList.Remove(room.Name);
+            else
+                CachedRoomList[room.Name] = room;
     }
     
-    public override void OnJoinedLobby() => SceneManager.LoadScene("MainMenu");
+    #endregion
 }

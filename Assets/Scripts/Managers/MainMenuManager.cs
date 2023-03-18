@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Newtonsoft.Json.Linq;
-using Photon.Realtime;
 using Random = UnityEngine.Random;
 
 public class MainMenuManager : MonoBehaviourPunCallbacks
@@ -17,56 +16,18 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     
     private readonly float _dotInterval = 0.5f;
     private int _numDots = 0;
+
+    #region Events
     
-    public void CreateRoom()
+    public void Update()
     {
-        if (string.IsNullOrEmpty(_inputField.text))
-            return;
-        
-        OnConnect();
-        PhotonNetwork.CreateRoom(_inputField.text);
+        Debug.Log($"Screen Current Resolution: {Screen.currentResolution.width + " x " + Screen.currentResolution.height}");
+        Debug.Log($"ResolutionIndex {PlayerPrefsManager.ResolutionIndex}");
     }
-    
-    public void JoinRoom()
-    {
-        if (string.IsNullOrEmpty(_inputField.text))
-            return;
-        
-        OnConnect();
-        PhotonNetwork.JoinRoom(_inputField.text);
-    }
-    
-    private void OnConnect()
-    {
-        _inputField.gameObject.SetActive(false);
-        _statusText.gameObject.SetActive(true);
-        _errorText.gameObject.SetActive(false);
-        StartCoroutine(DotAnimation());
-    }    
-    
-    private IEnumerator DotAnimation()
-    {
-        while (true)
-        {
-            _numDots = (_numDots + 1) % 4;
-            string dots = "";
-            for (int i = 0; i < _numDots; i++)
-            {
-                dots += ".";
-            }
-            _statusText.text  = "Connecting" + dots;
-            yield return new WaitForSeconds(_dotInterval);
-        }
-    }
-    
-    private string GetRandomName()
-    {
-        var names = JObject.Parse(Resources.Load<TextAsset>("JSON/nicknames").text)["nicknames"]?.ToObject<List<string>>();
-        var rand = names![Random.Range(0, names.Count)];
-        return rand;
-    }
-    
-    public void GenerateNickname() => _nicknameInputField.text = GetRandomName();
+
+    #endregion
+
+    #region Photon Callbacks
     
     public override void OnJoinedRoom()
     {
@@ -82,13 +43,35 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         _inputField.gameObject.SetActive(true);
     }
     
-    private IEnumerator ShowError(string message)
+    #endregion
+    
+    #region Public Methods
+    
+    public void CreateRoom()
     {
-        _errorText.text = message;
-        _errorText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(2);
-        _errorText.gameObject.SetActive(false);
+        if (string.IsNullOrEmpty(_inputField.text))
+            return;
+        
+        if (DoesRoomExist(_inputField.text))
+        {
+            StartCoroutine(ShowError("Room already exists"));
+            return;
+        }
+        
+        OnConnect();
+        PhotonNetwork.CreateRoom(_inputField.text);
     }
+    
+    public void JoinRoom()
+    {
+        if (string.IsNullOrEmpty(_inputField.text))
+            return;
+        
+        OnConnect();
+        PhotonNetwork.JoinRoom(_inputField.text);
+    }
+    
+    public void GenerateNickname() => _nicknameInputField.text = GetRandomName();
     
     public void OnQuit()
     {
@@ -99,9 +82,56 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 #endif
     }
     
-    public void Update()
+    #endregion
+    
+    #region Private Methods
+    
+    private void OnConnect()
     {
-        Debug.Log($"Screen Current Resolution: {Screen.currentResolution.width + " x " + Screen.currentResolution.height}");
-        Debug.Log($"ResolutionIndex {PlayerPrefsManager.ResolutionIndex}");
+        _inputField.gameObject.SetActive(false);
+        _statusText.gameObject.SetActive(true);
+        _errorText.gameObject.SetActive(false);
+        StartCoroutine(DotAnimation());
+    }    
+    
+    private IEnumerator DotAnimation()
+    {
+        while (true)
+        {
+            _numDots = (_numDots + 1) % 4;
+            var dots = "";
+            for (var i = 0; i < _numDots; i++)
+            {
+                dots += ".";
+            }
+            _statusText.text  = "Connecting" + dots;
+            yield return new WaitForSeconds(_dotInterval);
+        }
     }
+    
+    private string GetRandomName()
+    {
+        var names = JObject.Parse(Resources.Load<TextAsset>("JSON/nicknames").text)["nicknames"]?.ToObject<List<string>>();
+        var rand = names![Random.Range(0, names.Count)];
+        return rand;
+    }
+    
+    private IEnumerator ShowError(string message)
+    {
+        _errorText.text = message;
+        _errorText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        _errorText.gameObject.SetActive(false);
+    }
+    
+    private bool DoesRoomExist(string roomName)
+    {
+        if (LoadingSceneManager.CachedRoomList.TryGetValue(roomName, out var room))
+            return !room.RemovedFromList;
+        
+        return false;
+    }
+    
+    #endregion
+    
 }

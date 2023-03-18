@@ -71,10 +71,9 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         if (MainCamera == null)
-        {
             MainCamera = GameObject.FindWithTag("MainCamera").transform;
-            _freeLook = MainCamera!.gameObject.GetComponent<CinemachineFreeLook>();
-        }
+        
+        _freeLook = MainCamera!.GetComponent<CinemachineFreeLook>();
     }
     
     private void Start()
@@ -95,8 +94,8 @@ public class PlayerController : MonoBehaviour
         
         if (_photonView.IsMine)
         {
-            _freeLook.Follow = this.transform;
-            _freeLook.LookAt = this.transform;
+            _freeLook.Follow = PlayerTransform;
+            _freeLook.LookAt = PlayerTransform;
             _photonView.OwnershipTransfer = OwnershipOption.Takeover;
         }
     }
