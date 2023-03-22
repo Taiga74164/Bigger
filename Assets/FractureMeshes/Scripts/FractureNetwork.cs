@@ -17,6 +17,10 @@ public class FractureNetwork : MonoBehaviour
     [SerializeField]
     [Tooltip("Time in seconds after a piece of rubble collides with the ground and when it is culled.")]
     private float rubbleCullDelay = 15.0f;
+    [SerializeField]
+    [Tooltip("Delay in milliseconds between each check performed by the network for if the building has collapsed")]
+    private int collapseCheckDelay = 3000;
+
 
     //Async
     CancellationTokenSource cancellationTokenSource;
@@ -202,24 +206,31 @@ public class FractureNetwork : MonoBehaviour
     //create a cancellation token for this async function
     public async void StartCollapse()
     {
-        if (!isCollapsing)
-        {
-            Debug.Log("building has started collapsing");
-            isCollapsing = true;
-            while (isCollapsing)
-            {
-                await Task.Run(() => BreakFloatingNodes(), cancellationTokenSource.Token);
-                if (hasCollapsed)
-                {
-                    cancellationTokenSource.Cancel();
-                    break;
-                }
-            }
-            cancellationTokenSource.Cancel();
-            //cancellationTokenSource.Dispose();
-        }
+        if (isCollapsing) return; //only start collapsing once
 
-        //terminate async task
+        //Debug.Log("building has started collapsing");
+        isCollapsing = true;
+        while (isCollapsing)
+        {
+            await Task.Delay(collapseCheckDelay); //delay between each collapse check. Improves performance
+            await Task.Run(() => BreakFloatingNodes(cancellationTokenSource.Token), cancellationTokenSource.Token);
+            //Debug.Log("checked for collapse");
+            if (hasCollapsed) //if the building has collapsed
+            {
+                cancellationTokenSource.Cancel(); //cancel the async task
+                Debug.Log("building has collapsed");
+
+                /*
+                 * destroy gameobject containing network without destroying pieces of rubble
+                 */
+                for (int i = 0; i <transform.childCount; i++)
+                {
+                    transform.GetChild(i).parent = null;
+                }
+                Destroy(gameObject);
+                break;
+            }
+        }
     }
 
     #region Debug
@@ -246,11 +257,13 @@ public class FractureNetwork : MonoBehaviour
     }
     #endregion
 
-    public void BreakFloatingNodes()
+    public void BreakFloatingNodes(CancellationToken token)
     {
-        if (cancellationTokenSource.IsCancellationRequested)
+        
+        if (token.IsCancellationRequested)
         {
             Debug.Log("Async task cancelled");
+            hasCollapsed = true;
             return;
         }
 
@@ -264,7 +277,7 @@ public class FractureNetwork : MonoBehaviour
         {
             if (node.isBroken) continue; //ignore broken nodes
             if (PathTo(node, node.foundationTarget)) continue; //if connected to foundation continue   
-            node.isBroken = true; //set all that aren't already broken or connected to the foundation to true     
+            node.isBroken = true; //set all that aren't already broken or connected to the foundation to broken
         }
 
         //check if whole building has collapsed
@@ -273,8 +286,8 @@ public class FractureNetwork : MonoBehaviour
         {
             if (!node.isBroken && !node.isFoundation) //if there is an unbroken part of the mesh and that node is not a foundation piece
             {
-                hasCollapsed = false;
-                break;
+                hasCollapsed = false; //building has not collapsed
+                break; //stop the loop
             }
         }
     }
@@ -284,4 +297,10 @@ public class FractureNetwork : MonoBehaviour
         cancellationTokenSource?.Cancel();
         //cancellationTokenSource?.Dispose();
     }
+
+    private void OnBuildingCollapse()
+    {
+        Destroy(gameObject);
+    }
+
 }

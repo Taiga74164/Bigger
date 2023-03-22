@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class PlayerGrowth : MonoBehaviour
 {
-    float currentScale;
-    float targetScale;
+    Vector3 targetScale;
 
     [SerializeField]
     private float growthRate;
@@ -14,21 +13,20 @@ public class PlayerGrowth : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-        currentScale = transform.localScale.x; //assume scale is uniform   
-        targetScale = currentScale;
+    { 
+        targetScale = transform.localScale;
     }
 
     public void Grow(float growthAmount)
     {
-        targetScale += growthAmount;
+        targetScale += new Vector3(growthAmount, growthAmount, growthAmount);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(targetScale);
-        transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(targetScale, targetScale, targetScale), growthRate * Time.deltaTime);
+        //Debug.Log(targetScale);
+        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, growthRate * Time.deltaTime);
         
     }
 
@@ -40,4 +38,6 @@ public class PlayerGrowth : MonoBehaviour
             collectable.Collect(gameObject);
         }
     }
+
+    //write async function to handle growth
 }

@@ -89,7 +89,7 @@ public class SubFracture : MonoBehaviour
 
         if (_node.isBroken && collision.gameObject.tag == "Ground")
         {
-            Debug.Log("collided with ground");
+            //Debug.Log("collided with ground");
             StartCoroutine(CullWithDelay());
         }
 
