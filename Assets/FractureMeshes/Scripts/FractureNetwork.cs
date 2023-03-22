@@ -15,9 +15,6 @@ public class FractureNetwork : MonoBehaviour
     bool hasCollapsed = false;
 
     [SerializeField]
-    [Tooltip("Time in seconds after a piece of rubble collides with the ground and when it is culled.")]
-    private float rubbleCullDelay = 15.0f;
-    [SerializeField]
     [Tooltip("Delay in milliseconds between each check performed by the network for if the building has collapsed")]
     private int collapseCheckDelay = 3000;
 
@@ -128,7 +125,6 @@ public class FractureNetwork : MonoBehaviour
             {
 
                 node.subFracture._node = node;
-                node.subFracture._cullDelay = rubbleCullDelay;
                 if (node.isFoundation)
                 {
                     node.subFracture.GetComponent<MeshRenderer>().material.color = Color.green;

@@ -8,4 +8,7 @@ using UnityEngine;
 interface ICollectable
 {
     void Collect(GameObject _player); //interface method called when the object is collected by a player.
+
+    public bool CanCollect { get; set; }
+
 }
