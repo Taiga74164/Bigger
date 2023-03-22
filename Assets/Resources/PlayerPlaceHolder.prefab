@@ -1499,6 +1499,7 @@ MonoBehaviour:
   MoveSpeed: 5
   DashDistance: 50
   DashCooldown: 2
+  Size: 1
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0

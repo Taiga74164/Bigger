@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using Photon.Pun;
 using TMPro;
 using Cinemachine;
+using Google.Protobuf;
 
 public class PlayerController : MonoBehaviour
 {
@@ -68,7 +69,18 @@ public class PlayerController : MonoBehaviour
     private float _rotationTime = 0.0f;
     
     #endregion
-
+    
+    #region PLAYER DATA
+    
+    private PlayerData _playerData;
+    
+    #endregion
+    
+    /// <summary>
+    /// TO BE REMOVED
+    /// </summary>
+    public float Size = 1.0f;
+    
     public float GetSize() => (float)Attributes.Size.GetValue();
     public void SetSize(float value) => Attributes.Size.SetValue(value);
     
@@ -103,7 +115,18 @@ public class PlayerController : MonoBehaviour
             _freeLook.Follow = PlayerTransform;
             _freeLook.LookAt = PlayerTransform;
             _photonView.OwnershipTransfer = OwnershipOption.Takeover;
+            
+            // Set up player data.
+            _playerData = new PlayerData()
+            {
+                PlayerID = PhotonNetwork.LocalPlayer.ActorNumber,
+                PlayerName = _photonView.Owner.NickName,
+                PlayerSize = GetSize()
+            };
         }
+        
+        // Update player name attribute.
+        _name.SetText(_photonView.Owner.NickName);
     }
 
     private void Update()
@@ -116,12 +139,54 @@ public class PlayerController : MonoBehaviour
             UpdatePosition();
             HandleVelocity();
             HandleRotation();
-            HandleDash();
+            HandleDashing();
+            
+            // Update player data.
+            _playerData.PlayerSize = GetSize();
+            
+            // Serialize player data.
+            var bytes = _playerData.ToByteArray();
+            
+            // Send player data to other players.
+            _photonView.RPC(nameof(UpdatePlayerData), RpcTarget.Others, bytes);
+            
+            // TO BE REMOVED
+            if (Input.GetKey(KeyCode.E))
+                Collect();
         }
+    }
+    
+    [PunRPC]
+    private void UpdatePlayerData(byte[] bytes)
+    {
+        // Deserialize player data.
+        var playerData = PlayerData.Parser.ParseFrom(bytes);
         
-        // Player attributes.
-        _name.SetText(_photonView.Owner.NickName);
+        // Update the player size attribute.
+        SetSize(playerData.PlayerSize);
+        
+        // Update player size attribute.
         _size.SetText("Size: " + GetSize().ToString());
+    }
+    
+    /// <summary>
+    /// Example implementation of how to collect items with ProtoBuf.
+    /// Will be moved to a separate script and refactored later.
+    /// </summary>
+    private void Collect()
+    {
+        // Increase player size.
+        var currentSize = GetSize();
+        SetSize(currentSize + Size);
+        
+        // Update player data.
+        _playerData.PlayerSize = GetSize();
+        
+        // Serialize player data.
+        var bytes = _playerData.ToByteArray();
+        
+        // Send updated player data to other players.
+        _photonView.RPC(nameof(UpdatePlayerData), RpcTarget.AllBuffered, bytes);
     }
     
     private void AssignAnimationIDs()
@@ -146,6 +211,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Controller.isGrounded)
             _velocity.y += Mathf.Sqrt(JumpHeight * -2f * Gravity);
+        
         // ToDo:
         // Add jump animations.
     }
@@ -156,12 +222,9 @@ public class PlayerController : MonoBehaviour
     /// <param name="context">The input context.</param>
     private void Dash(InputAction.CallbackContext context)
     {
-        if (!Controller.isGrounded)
+        if (!Controller.isGrounded || !_canDash)
             return;
-        
-        if (!_canDash)
-            return;
-        
+
         _velocity += transform.forward * DashDistance;
         _canDash = false;
         
@@ -260,7 +323,10 @@ public class PlayerController : MonoBehaviour
             rotation, Time.deltaTime * RotationSpeed);
     }
     
-    private void HandleDash()
+    /// <summary>
+    /// Handles the player's dashing.
+    /// </summary>
+    private void HandleDashing()
     {
         if (_canDash)
             return;
