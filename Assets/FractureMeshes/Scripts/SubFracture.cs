@@ -18,17 +18,6 @@ public class SubFracture : MonoBehaviour
     public FractureNetwork _network;
     public FractureNetworkNode _node;
 
-    //culling
-    public float _cullDelay = 100.0f;
-
-    public float CullDelay
-    {
-        get { return _cullDelay; }
-        set { _cullDelay = value; }
-    }
-
-    private bool bCull = false;
-
     void Start()
     {
         _network = GetComponentInParent<FractureNetwork>(); //get fracture network
@@ -38,12 +27,9 @@ public class SubFracture : MonoBehaviour
         {
             _rb = gameObject.AddComponent<Rigidbody>();
         }
-
-
         
         _rb.isKinematic = true; //turn off physics until broken
 
-        
         _collider = GetComponent<MeshCollider>();//add collider if none exists
         if (!_collider)
         {
@@ -53,8 +39,6 @@ public class SubFracture : MonoBehaviour
             //if you have a fractured mesh it is likely the pieces will be convex
             _collider.convex = true;
         }
-
-
     }
 
     private void Update()
@@ -68,6 +52,7 @@ public class SubFracture : MonoBehaviour
         {
             _rb.isKinematic = false;
             gameObject.GetComponent<MeshRenderer>().material.color = Color.red; //set mesh to red if broken
+            StartCoroutine(EnablePickup());
         }  
     }
 
@@ -81,25 +66,21 @@ public class SubFracture : MonoBehaviour
             if (collision.impulse.magnitude > 2.5f) //if collision is of sufficient force
             {
                 _node.isBroken = true;
-                _network.StartCollapse(); //if the fractured mesh is not already collapsing, start collapsing
+                _network.StartCollapse(); //tell the fracture network to start collapsing
 
                 return;
             }
         }
-
-        if (_node.isBroken && collision.gameObject.tag == "Ground")
-        {
-            //Debug.Log("collided with ground");
-            StartCoroutine(CullWithDelay());
-        }
-
     }
-    
 
-    IEnumerator CullWithDelay()
+    IEnumerator EnablePickup()
     {
-        yield return new WaitForSeconds(_cullDelay);
-        Destroy(gameObject);
+        yield return new WaitForSeconds(3); //delay to let the rubble fall
 
+        //once collection is enabled, the player will scoop up the rubble around them
+
+        if(GetComponent<GrowthPickup>()) GetComponent<GrowthPickup>().enabled = true;
+        if(GetComponent<ICollectable>() != null) GetComponent<ICollectable>().CanCollect = true;
     }
+
 }
