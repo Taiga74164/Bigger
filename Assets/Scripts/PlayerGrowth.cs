@@ -1,3 +1,4 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,7 +10,10 @@ using UnityEngine;
 
 public class PlayerGrowth : MonoBehaviour
 {
+    ThirdPersonController tpc; 
+
     Vector3 targetScale;
+    float targetMoveSpeed;
 
     [SerializeField]
     private float growthRate;
@@ -18,13 +22,17 @@ public class PlayerGrowth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     { 
+        tpc = GetComponent<ThirdPersonController>();
         targetScale = transform.localScale; //initialize scale so player doesn't shrink
+        targetMoveSpeed = tpc.MoveSpeed;
         StartCoroutine(Grow());
     }
 
     public void Grow(float growthAmount)
     {
-        targetScale += new Vector3(growthAmount, growthAmount, growthAmount); 
+        targetScale += new Vector3(growthAmount, growthAmount, growthAmount);
+        targetMoveSpeed += growthAmount;
+
     }
 
     // Update is called once per frame
@@ -53,6 +61,11 @@ public class PlayerGrowth : MonoBehaviour
         while(true)
         {
             transform.localScale = Vector3.Lerp(transform.localScale, targetScale, growthRate * Time.deltaTime);
+            ThirdPersonController tpc = GetComponent<ThirdPersonController>();
+            if (tpc)
+            {
+                tpc.MoveSpeed = Mathf.Lerp(tpc.MoveSpeed, targetMoveSpeed, growthRate * Time.deltaTime);
+            }
             yield return new WaitForSeconds(.05f);
         }
     }
