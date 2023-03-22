@@ -1497,7 +1497,7 @@ MonoBehaviour:
   Gravity: -9.81
   RotationSpeed: 10
   MoveSpeed: 5
-  DashDistance: 50
+  DashDistance: 30
   DashCooldown: 2
   Size: 1
 --- !u!1 &4523139366846529165

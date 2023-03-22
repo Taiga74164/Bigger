@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     public float RotationSpeed = 10f;
     public float MoveSpeed = 5.0f;
     // public float SprintSpeed = 10.0f; // If implemented should we have a stamina system?
-    public float DashDistance = 50.0f;
+    public float DashDistance = 30.0f;
     public float DashCooldown = 2.0f;
     
     #endregion
@@ -104,9 +104,9 @@ public class PlayerController : MonoBehaviour
         _attack = InputManager.Attack;
         
         // Listen for input actions.
-        _jump.performed += Jump;
-        _dash.performed += Dash;
-        _attack.performed += Attack;
+        _jump.started += Jump;
+        _dash.started += Dash;
+        _attack.started += Attack;
         
         AssignAnimationIDs();
         
@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour
         // Update player data.
         _playerData.PlayerSize = GetSize();
         
-        // Serialize player data.
+        // Serialize player data. 
         var bytes = _playerData.ToByteArray();
         
         // Send updated player data to other players.
@@ -230,7 +230,6 @@ public class PlayerController : MonoBehaviour
         
         // ToDo:
         // 1. Add dash animations.
-        // 2. Use lerp to smooth out the dash maybe?
     }
     
     /// <summary>
