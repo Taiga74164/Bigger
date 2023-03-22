@@ -58,18 +58,16 @@ public class SubFracture : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!_node.isBroken)
+        if (collision == null) return;
+        if (collision.gameObject.tag == "pickup") return; //don't detect collision for rubble being picked up
+        if (_node.isBroken) return; 
+
+        if (collision.impulse.magnitude > 2.5f) //if collision is of sufficient force
         {
-            if (collision == null) return;
-            //if (_node.isFoundation) return;
+            _node.isBroken = true;
+            _network.StartCollapse(); //tell the fracture network to start collapsing
 
-            if (collision.impulse.magnitude > 2.5f) //if collision is of sufficient force
-            {
-                _node.isBroken = true;
-                _network.StartCollapse(); //tell the fracture network to start collapsing
-
-                return;
-            }
+            return;
         }
     }
 
@@ -81,6 +79,7 @@ public class SubFracture : MonoBehaviour
 
         if(GetComponent<GrowthPickup>()) GetComponent<GrowthPickup>().enabled = true;
         if(GetComponent<ICollectable>() != null) GetComponent<ICollectable>().CanCollect = true;
+        gameObject.tag = "pickup";
     }
 
 }
