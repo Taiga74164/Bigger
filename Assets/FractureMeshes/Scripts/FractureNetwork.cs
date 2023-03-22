@@ -199,6 +199,7 @@ public class FractureNetwork : MonoBehaviour
 
     #endregion
 
+    //create a cancellation token for this async function
     public async void StartCollapse()
     {
         if (!isCollapsing)
@@ -215,7 +216,7 @@ public class FractureNetwork : MonoBehaviour
                 }
             }
             cancellationTokenSource.Cancel();
-            cancellationTokenSource.Dispose();
+            //cancellationTokenSource.Dispose();
         }
 
         //terminate async task
@@ -247,6 +248,12 @@ public class FractureNetwork : MonoBehaviour
 
     public void BreakFloatingNodes()
     {
+        if (cancellationTokenSource.IsCancellationRequested)
+        {
+            Debug.Log("Async task cancelled");
+            return;
+        }
+
         if(hasCollapsed)
         {
             Debug.Log("async task cancelled");
@@ -275,6 +282,6 @@ public class FractureNetwork : MonoBehaviour
     private void OnApplicationQuit()
     {
         cancellationTokenSource?.Cancel();
-        cancellationTokenSource?.Dispose();
+        //cancellationTokenSource?.Dispose();
     }
 }

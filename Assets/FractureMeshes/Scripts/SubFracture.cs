@@ -98,7 +98,6 @@ public class SubFracture : MonoBehaviour
 
     IEnumerator CullWithDelay()
     {
-
         yield return new WaitForSeconds(_cullDelay);
         Destroy(gameObject);
 
