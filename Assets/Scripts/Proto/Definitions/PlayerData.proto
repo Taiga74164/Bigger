@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+message PlayerData {
+  int32 playerID = 1;
+  string playerName = 2;
+  float playerSize = 3;
+}
