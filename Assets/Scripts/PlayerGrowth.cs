@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class PlayerGrowth : MonoBehaviour
 {
-    ThirdPersonController tpc; 
+    PlayerController tpc; 
 
     Vector3 targetScale;
     float targetMoveSpeed;
@@ -22,7 +22,7 @@ public class PlayerGrowth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     { 
-        tpc = GetComponent<ThirdPersonController>();
+        tpc = GetComponent<PlayerController>();
         targetScale = transform.localScale; //initialize scale so player doesn't shrink
         targetMoveSpeed = tpc.MoveSpeed;
         StartCoroutine(Grow());
