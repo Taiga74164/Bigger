@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     // public float SprintSpeed = 10.0f; // If implemented should we have a stamina system?
     public float DashDistance = 30.0f;
     public float DashCooldown = 2.0f;
+    public float Size = 1.0f;
     
     #endregion
     
@@ -75,11 +76,6 @@ public class PlayerController : MonoBehaviour
     private PlayerData _playerData;
     
     #endregion
-    
-    /// <summary>
-    /// TO BE REMOVED
-    /// </summary>
-    public float Size = 1.0f;
     
     public float GetSize() => (float)Attributes.Size.GetValue();
     public void SetSize(float value) => Attributes.Size.SetValue(value);
@@ -149,10 +145,6 @@ public class PlayerController : MonoBehaviour
             
             // Send player data to other players.
             _photonView.RPC(nameof(UpdatePlayerData), RpcTarget.Others, bytes);
-            
-            // TO BE REMOVED
-            if (Input.GetKey(KeyCode.E))
-                Collect();
         }
     }
     
@@ -166,14 +158,14 @@ public class PlayerController : MonoBehaviour
         SetSize(playerData.PlayerSize);
         
         // Update player size attribute.
-        _size.SetText("Size: " + GetSize().ToString());
+        _size.SetText("Size: " + Math.Round(GetSize(), 2).ToString());
     }
     
     /// <summary>
     /// Example implementation of how to collect items with ProtoBuf.
     /// Will be moved to a separate script and refactored later.
     /// </summary>
-    private void Collect()
+    public void UpdateGrowth()
     {
         // Increase player size.
         var currentSize = GetSize();
