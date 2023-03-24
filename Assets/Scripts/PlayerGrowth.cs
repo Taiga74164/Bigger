@@ -32,7 +32,8 @@ public class PlayerGrowth : MonoBehaviour
     {
         targetScale += new Vector3(growthAmount, growthAmount, growthAmount);
         targetMoveSpeed += growthAmount;
-
+        tpc.Size = growthAmount;
+        tpc.UpdateGrowth();
     }
 
     // Update is called once per frame
