@@ -1,29 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GrowthPickup : MonoBehaviour, ICollectable
 {
-    [SerializeField]
-    private float growthAmount = 0.05f;
-
-    public bool CanCollect { get { return _canCollect; } set { _canCollect = value; } }
-
+    [SerializeField] private float _growthAmount = 0.05f;
     private bool _canCollect;
-
-    private void Start()
+    
+    public bool CanCollect 
     {
-        _canCollect = false;
+        get => _canCollect;
+        set => _canCollect = value;
     }
-
-    public void Collect(GameObject _player)
+    
+    public void Collect(GameObject player)
     {
-        if (!_canCollect) return;
-
-        if(_player.GetComponent<PlayerGrowth>())
-        {
-            _player.GetComponent<PlayerGrowth>().Grow(growthAmount);
-            Destroy(gameObject);
-        }
+        if (!CanCollect)
+            return;
+        
+        player.GetComponent<PlayerGrowth>()?.Grow(_growthAmount);
+        Destroy(gameObject);
     }
 }

@@ -1292,6 +1292,7 @@ GameObject:
   - component: {fileID: 2077095964183324725}
   - component: {fileID: 2894505517347846883}
   - component: {fileID: 3483606142708349604}
+  - component: {fileID: 4829040618477347342}
   - component: {fileID: 3593802953111463428}
   - component: {fileID: 4513355219688859959}
   - component: {fileID: 4721510395990172076}
@@ -1382,6 +1383,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 5586008628176378121}
   - {fileID: -4592382513904034303}
+  - {fileID: 4829040618477347342}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1496,15 +1498,25 @@ MonoBehaviour:
   PlayerTransform: {fileID: 3893294197879345259}
   Controller: {fileID: 4416926081852918491}
   Attributes: {fileID: 2894505517347846883}
-  _name: {fileID: 6999119126800274890}
-  _size: {fileID: 4613354512607373991}
+  NameText: {fileID: 6999119126800274890}
+  SizeText: {fileID: 4613354512607373991}
   JumpHeight: 1.2
-  Gravity: -9.81
   RotationSpeed: 10
   MoveSpeed: 5
   DashDistance: 30
   DashCooldown: 2
-  Size: 1
+--- !u!114 &4829040618477347342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 847d12a8bf83b3b47b058812ac9b587d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &3593802953111463428
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1560,7 +1572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6d7418fa5ed854aab0cf34d152a0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  growthRate: 20
+  _growthRate: 1
 --- !u!114 &4939411827175092936
 MonoBehaviour:
   m_ObjectHideFlags: 0

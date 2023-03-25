@@ -19,9 +19,10 @@ public class PlayerController : MonoBehaviour
     public Transform MainCamera;
     public Transform PlayerTransform;
     public CharacterController Controller;
-    public PlayerAttributeHolder Attributes;
-    [SerializeField] private TMP_Text _name;
-    [SerializeField] private TMP_Text _size;
+    public EntityAttributeHolder Attributes;
+    
+    public TMP_Text NameText;
+    public TMP_Text SizeText;
     
     private CinemachineFreeLook _freeLook;
     
@@ -34,14 +35,12 @@ public class PlayerController : MonoBehaviour
     
     [Header("Player Settings")]
     public float JumpHeight = 1.2f;
-    public float Gravity = -9.81f;
+    private readonly float _gravity = Physics.gravity.y;
     public float RotationSpeed = 10f;
     public float MoveSpeed = 5.0f;
-    // public float SprintSpeed = 10.0f; // If implemented should we have a stamina system?
     public float DashDistance = 30.0f;
     public float DashCooldown = 2.0f;
-    public float Size = 1.0f;
-    
+
     #endregion
     
     #region Input Actions
@@ -77,8 +76,11 @@ public class PlayerController : MonoBehaviour
     
     #endregion
     
-    public float GetSize() => (float)Attributes.Size.GetValue();
-    public void SetSize(float value) => Attributes.Size.SetValue(value);
+    public float Size
+    {
+        get => (float) Attributes.Size.GetValue();
+        set => Attributes.Size.SetValue(value);
+    }
     
     private void Awake()
     {
@@ -111,74 +113,38 @@ public class PlayerController : MonoBehaviour
             _freeLook.Follow = PlayerTransform;
             _freeLook.LookAt = PlayerTransform;
             _photonView.OwnershipTransfer = OwnershipOption.Takeover;
-            
-            // Set up player data.
-            _playerData = new PlayerData()
-            {
-                PlayerID = PhotonNetwork.LocalPlayer.ActorNumber,
-                PlayerName = _photonView.Owner.NickName,
-                PlayerSize = GetSize()
-            };
         }
         
         // Update player name attribute.
-        _name.SetText(_photonView.Owner.NickName);
+        NameText.SetText(_photonView.Owner.NickName);
     }
 
     private void Update()
     {
-        if (_photonView.IsMine)
-        {
-            _hasAnimator = TryGetComponent(out _animator);
-            
-            // Player movement.
-            UpdatePosition();
-            HandleVelocity();
-            HandleRotation();
-            HandleDashing();
-            
-            // Update player data.
-            _playerData.PlayerSize = GetSize();
-            
-            // Serialize player data.
-            var bytes = _playerData.ToByteArray();
-            
-            // Send player data to other players.
-            _photonView.RPC(nameof(UpdatePlayerData), RpcTarget.Others, bytes);
-        }
-    }
-    
-    [PunRPC]
-    private void UpdatePlayerData(byte[] bytes)
-    {
-        // Deserialize player data.
-        var playerData = PlayerData.Parser.ParseFrom(bytes);
+        if (!_photonView.IsMine)
+            return;
         
-        // Update the player size attribute.
-        SetSize(playerData.PlayerSize);
-        
-        // Update player size attribute.
-        _size.SetText("Size: " + Math.Round(GetSize(), 2).ToString());
+        _hasAnimator = TryGetComponent(out _animator);
+            
+        // Player movement.
+        UpdatePosition();
+        HandleVelocity();
+        HandleRotation();
+        HandleDashing();
     }
     
     /// <summary>
-    /// Example implementation of how to collect items with ProtoBuf.
-    /// Will be moved to a separate script and refactored later.
+    /// Updates the player's growth attribute display.
     /// </summary>
-    public void UpdateGrowth()
+    /// <param name="amount">The amount to increase.</param>
+    public void UpdateGrowth(float amount)
     {
         // Increase player size.
-        var currentSize = GetSize();
-        SetSize(currentSize + Size);
+        var currentSize = Size;
+        Size = currentSize + amount;
         
-        // Update player data.
-        _playerData.PlayerSize = GetSize();
-        
-        // Serialize player data. 
-        var bytes = _playerData.ToByteArray();
-        
-        // Send updated player data to other players.
-        _photonView.RPC(nameof(UpdatePlayerData), RpcTarget.AllBuffered, bytes);
+        // Update player size text.
+        SizeText.SetText($"Size: {Math.Round(Size, 2)}");
     }
     
     private void AssignAnimationIDs()
@@ -202,7 +168,7 @@ public class PlayerController : MonoBehaviour
     private void Jump(InputAction.CallbackContext context)
     {
         if (Controller.isGrounded)
-            _velocity.y += Mathf.Sqrt(JumpHeight * -2f * Gravity);
+            _velocity.y += Mathf.Sqrt(JumpHeight * -2f * _gravity);
         
         // ToDo:
         // Add jump animations.
@@ -270,7 +236,7 @@ public class PlayerController : MonoBehaviour
     private void HandleVelocity()
     {
         // Apply gravity to the velocity.
-        _velocity.y += Gravity * Time.deltaTime;
+        _velocity.y += _gravity * Time.deltaTime;
         // Apply drag/friction to the velocity.
         _velocity.x *= 0.9f;
         _velocity.z *= 0.9f;

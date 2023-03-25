@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System;
 using TMPro;
 using UnityEngine;
 
@@ -30,7 +30,7 @@ public class EntityAttributeHolder : AttributeHolder
     {
         // Apply references.
         NameText.SetText(Name.GetValue().ToString());;
-        SizeText.SetText("Size: " + Size.GetValue().ToString());
+        SizeText.SetText($"Size: {Size.GetValue()}");
         
         // Add attributes.
         CreateAttribute(Name);

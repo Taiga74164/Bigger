@@ -1,75 +1,59 @@
-using StarterAssets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-/*
- * This behaviour allows the player to gradually grow and shrink to a target size. 
- */
-
+/// <summary>
+/// This behaviour allows the player to gradually grow and shrink to a target size.
+/// </summary>
 public class PlayerGrowth : MonoBehaviour
 {
-    PlayerController tpc; 
-
-    Vector3 targetScale;
-    float targetMoveSpeed;
-
-    [SerializeField]
-    private float growthRate;
-
-
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float _growthRate = 1f;
+    
+    private PlayerController _playerController; 
+    private Vector3 _targetScale;
+    private float _targetMoveSpeed;
+    private Coroutine _growthCoroutine;
+    
+    private void Start()
     { 
-        tpc = GetComponent<PlayerController>();
-        targetScale = transform.localScale; //initialize scale so player doesn't shrink
-        targetMoveSpeed = tpc.MoveSpeed;
-        StartCoroutine(Grow());
+        _playerController = GetComponent<PlayerController>();
+        _targetScale = transform.localScale;
+        _targetMoveSpeed = _playerController.MoveSpeed;
+        _growthCoroutine = StartCoroutine(Grow());
     }
-
-    public void Grow(float growthAmount)
+    
+    private void Update()
     {
-        targetScale += new Vector3(growthAmount, growthAmount, growthAmount);
-        targetMoveSpeed += growthAmount;
-        tpc.Size = growthAmount;
-        tpc.UpdateGrowth();
+        // Debug.Log(targetScale);
+        // transform.localScale = Vector3.Lerp(transform.localScale, targetScale, growthRate * Time.deltaTime);
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void OnDestroy()
     {
-        //Debug.Log(targetScale);
-        //transform.localScale = Vector3.Lerp(transform.localScale, targetScale, growthRate * Time.deltaTime);
+        if (_growthCoroutine != null)
+            StopCoroutine(_growthCoroutine);
+    }
+    
+    public void Grow(float amount)
+    {
+        // Set the target scale and move speed.
+        _targetScale += new Vector3(amount, amount, amount);
+        _targetMoveSpeed += amount;
         
+        // Update player attributes.
+        _playerController.UpdateGrowth(amount);
     }
-
-    /*
-     * Move this function onto a collection monobehaviour that "scoops" up collectables with a trigger volume
-     */
-
-    private void OnCollisionEnter(Collision collision)
+    
+    private IEnumerator Grow()
     {
-        ICollectable collectable = collision.gameObject.GetComponent<ICollectable>();
-        if (collectable != null)
+        while (true)
         {
-            collectable.Collect(gameObject);
+            transform.localScale = Vector3.Lerp(transform.localScale, _targetScale, _growthRate * Time.deltaTime);
+            if (TryGetComponent(out PlayerController playerController))
+                playerController.MoveSpeed = Mathf.Lerp(playerController.MoveSpeed, _targetMoveSpeed, _growthRate * Time.deltaTime);
+            
+            yield return new WaitForSeconds(0.05f);
         }
     }
-
-    IEnumerator Grow()
-    {
-        while(true)
-        {
-            transform.localScale = Vector3.Lerp(transform.localScale, targetScale, growthRate * Time.deltaTime);
-            ThirdPersonController tpc = GetComponent<ThirdPersonController>();
-            if (tpc)
-            {
-                tpc.MoveSpeed = Mathf.Lerp(tpc.MoveSpeed, targetMoveSpeed, growthRate * Time.deltaTime);
-            }
-            yield return new WaitForSeconds(.05f);
-        }
-    }
-
-    //write async function to handle growth to improve performance
 }
