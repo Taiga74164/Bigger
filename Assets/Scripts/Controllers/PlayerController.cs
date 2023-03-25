@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
     public CharacterController Controller;
     public EntityAttributeHolder Attributes;
     
-    public TMP_Text NameText;
-    public TMP_Text SizeText;
+    [SerializeField] private TMP_Text _nameText;
+    [SerializeField] private TMP_Text _sizeText;
     
     private CinemachineFreeLook _freeLook;
     
@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
         }
         
         // Update player name attribute.
-        NameText.SetText(_photonView.Owner.NickName);
+        _nameText.SetText(_photonView.Owner.NickName);
     }
 
     private void Update()
@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
         Size = currentSize + amount;
         
         // Update player size text.
-        SizeText.SetText($"Size: {Math.Round(Size, 2)}");
+        _sizeText.SetText($"Size: {Math.Round(Size, 2)}");
     }
     
     private void AssignAnimationIDs()

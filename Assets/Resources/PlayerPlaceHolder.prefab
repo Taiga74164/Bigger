@@ -1498,8 +1498,8 @@ MonoBehaviour:
   PlayerTransform: {fileID: 3893294197879345259}
   Controller: {fileID: 4416926081852918491}
   Attributes: {fileID: 2894505517347846883}
-  NameText: {fileID: 6999119126800274890}
-  SizeText: {fileID: 4613354512607373991}
+  _nameText: {fileID: 6999119126800274890}
+  _sizeText: {fileID: 4613354512607373991}
   JumpHeight: 1.2
   RotationSpeed: 10
   MoveSpeed: 5
