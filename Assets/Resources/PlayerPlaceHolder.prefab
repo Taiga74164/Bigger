@@ -1585,8 +1585,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acede238f89e0dc42a090c5f55ff2aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PullStrengh: 1
-  PullRadius: 1.5
+  _pullStrength: 5
+  _pullRadius: 10
+  _useLerp: 0
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0
