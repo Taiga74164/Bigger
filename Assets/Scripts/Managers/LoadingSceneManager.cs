@@ -15,7 +15,7 @@ public class LoadingSceneManager : MonoBehaviourPunCallbacks
     
     private void Awake()
     {
-        InitializeResolution();
+        InitializeResolutionIndex();
         
         // Make sure this object is not destroyed when loading a new scene because we need the cached room list.
         DontDestroyOnLoad(this);
@@ -57,24 +57,14 @@ public class LoadingSceneManager : MonoBehaviourPunCallbacks
     
     #region Methods
     
-    private void InitializeResolution()
+    private void InitializeResolutionIndex()
     {
-        // ToDo:
-        // https://github.com/Taiga74164/Bigger/issues/2
+        if (!PlayerPrefsManager.FirstLaunch)
+            return;
         
-        if (PlayerPrefsManager.FirstLaunch)
-        {
-            PlayerPrefsManager.ResolutionIndex = GetMatchingResolutionIndex();
-            PlayerPrefsManager.Save();
-            PlayerPrefsManager.FirstLaunch = false;
-        }
-
-        // var resolutionIndex = PlayerPrefsManager.ResolutionIndex;
-        // var resolutions = Screen.resolutions;
-        // if (resolutionIndex >= 0 && resolutionIndex < resolutions.Length)
-        // {
-        //     Screen.SetResolution(resolutions[resolutionIndex].width, resolutions[resolutionIndex].height, Screen.fullScreenMode);
-        // }
+        PlayerPrefsManager.ResolutionIndex = GetMatchingResolutionIndex();
+        PlayerPrefsManager.Save();
+        PlayerPrefsManager.FirstLaunch = false;
     }
     
     private int GetMatchingResolutionIndex()
