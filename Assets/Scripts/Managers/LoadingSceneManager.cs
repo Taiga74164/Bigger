@@ -68,13 +68,6 @@ public class LoadingSceneManager : MonoBehaviourPunCallbacks
             PlayerPrefsManager.Save();
             PlayerPrefsManager.FirstLaunch = false;
         }
-
-        // var resolutionIndex = PlayerPrefsManager.ResolutionIndex;
-        // var resolutions = Screen.resolutions;
-        // if (resolutionIndex >= 0 && resolutionIndex < resolutions.Length)
-        // {
-        //     Screen.SetResolution(resolutions[resolutionIndex].width, resolutions[resolutionIndex].height, Screen.fullScreenMode);
-        // }
     }
     
     private int GetMatchingResolutionIndex()

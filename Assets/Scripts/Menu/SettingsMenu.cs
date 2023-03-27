@@ -4,33 +4,22 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using XLua;
 
 public class SettingsMenu : Menu<SettingsMenu>
 {
     [SerializeField] private Slider _masterVolumeSlider;
-    // [SerializeField] private Slider _musicVolumeSlider;
-    // [SerializeField] private Slider _sfxVolumeSlider;
     [SerializeField] private Slider _brightnessSlider;
     [SerializeField] private Toggle _vSyncToggle;
     [SerializeField] private TMP_Dropdown _resolutionDropdown;
     [SerializeField] private TMP_Dropdown _windowModeDropdown;
-    // [SerializeField] private Dropdown _textureQualityDropdown;
-    // [SerializeField] private Dropdown _antiAliasingDropdown;
-    // [SerializeField] private Dropdown _shadowQualityDropdown;
-    // [SerializeField] private Dropdown _vSyncDropdown;
     [SerializeField] private TMP_Dropdown _fpsDropdown;
     
     private float _masterVolume;
-    // private float _musicVolume;
-    // private float _sfxVolume;
     private float _brightness;
     private bool _vSync;
     private int _resolutionIndex;
     private int _windowModeIndex;
-    // private int _textureQuality;
-    // private int _antiAliasing;
-    // private int _shadowQuality;
-    // private int _vSyncIndex;
     private int _fpsIndex;
 
     private Resolution[] _resolutions;
