@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Google.Protobuf;
 using Photon.Realtime;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerDataHandler : MonoBehaviour, IPunObservable
 {
@@ -36,6 +37,12 @@ public class PlayerDataHandler : MonoBehaviour, IPunObservable
         
         // Serialize player data.
         var bytes = _playerData.ToByteArray();
+        
+        // Update player custom properties.
+        // Example: https://forum.photonengine.com/discussion/comment/35084/#Comment_35084
+        var customProperties = new Hashtable();
+        customProperties["PlayerData"] = bytes;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
         
         // Send player data to other players.
         _photonView.RPC(nameof(OnPlayerDataUpdated), RpcTarget.Others, bytes);

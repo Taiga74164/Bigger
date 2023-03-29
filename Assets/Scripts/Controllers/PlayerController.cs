@@ -70,12 +70,6 @@ public class PlayerController : MonoBehaviour
     
     #endregion
     
-    #region PLAYER DATA
-    
-    private PlayerData _playerData;
-    
-    #endregion
-    
     public float Size
     {
         get => (float) Attributes.Size.GetValue();
