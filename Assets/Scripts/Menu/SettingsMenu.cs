@@ -25,10 +25,8 @@ public class SettingsMenu : Menu<SettingsMenu>
     private Resolution[] _resolutions;
     private HashSet<ResolutionOption> _resolutionOptions;
     
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-        
         // Get all available resolutions
         _resolutions = Screen.resolutions;
         _resolutionDropdown.ClearOptions();
@@ -55,19 +53,9 @@ public class SettingsMenu : Menu<SettingsMenu>
         UpdateUIElements();
         UpdateSettings();
     }
-    
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.Escape))
-            Close();
-        
-        // for (var i = 0; i < _resolutionOptions.Count; i++)
-        // {
-        //     var option = _resolutionOptions.ToList()[i];
-        //     Debug.Log($"Count: {i}: {option.Width}, {option.Height}");
-        // }
-    }
-    
+
+    protected override void Update() => base.Update();
+
     /// <summary>
     /// Adjusts the master volume.
     /// </summary>
@@ -184,17 +172,5 @@ public class SettingsMenu : Menu<SettingsMenu>
         PlayerPrefsManager.WindowModeIndex = _windowModeIndex;
         PlayerPrefsManager.FPSIndex = _fpsIndex;
         PlayerPrefsManager.Save();
-    }
-    
-    public override void Open()
-    {
-        base.Open();
-        gameObject.SetActive(true);
-    }
-    
-    public override void Close()
-    {
-        base.Close();
-        gameObject.SetActive(false);
     }
 }

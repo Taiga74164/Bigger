@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OpenSettingsMenu : MonoBehaviour
+public class SettingsMenuOpener : MonoBehaviour
 {
     [SerializeField] private SettingsMenu _settingsMenuPrefab;
     
-    public void OpenMenu()
-    {
-        _settingsMenuPrefab.Open();
-    }
+    public void OpenMenu() => _settingsMenuPrefab.Open();
 }

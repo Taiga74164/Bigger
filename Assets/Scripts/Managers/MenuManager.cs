@@ -2,25 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuManager : MonoBehaviour
+public class MenuManager : Singleton<MenuManager>
 {
-    private static MenuManager _instance;
-    public static MenuManager Instance => _instance;
-    
     private Stack<Menu> _menuStack = new Stack<Menu>();
-    
-    private void Awake()
-    {
-        if (_instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-    }
     
     /// <summary>
     /// Opens a specific menu and closes the previous menu.
@@ -28,7 +12,7 @@ public class MenuManager : MonoBehaviour
     /// <param name="menu">The menu you want to close. This menu must inherit the Menu class</param>
     public void OpenMenu(Menu menu)
     {
-        if (menu?.gameObject == null)
+        if (menu.gameObject == null)
             return;
 
         if (_menuStack.Count > 0)

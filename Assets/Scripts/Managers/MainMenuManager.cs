@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using Newtonsoft.Json.Linq;
 using Random = UnityEngine.Random;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class MainMenuManager : MonoBehaviourPunCallbacks
+public class MainMenuManager : Singleton<MainMenuManager>
 {
     [SerializeField] private TMP_InputField _inputField;
     [SerializeField] private TMP_InputField _nicknameInputField;
@@ -58,6 +60,19 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         }
         
         OnConnect();
+        
+        // var roomOptions = new RoomOptions
+        // {
+        //     MaxPlayers = byte.Parse(_maxPlayersInputField.text),
+        //     CustomRoomProperties = new Hashtable
+        //     {
+        //         { "GameMode", _gameModeDropdown.options[_gameModeDropdown.value].text }
+        //     },
+        //     CustomRoomPropertiesForLobby = new[] { "GameMode" },
+        //     IsOpen = true,
+        //     IsVisible = true
+        // };
+        
         PhotonNetwork.CreateRoom(_inputField.text);
     }
     
@@ -69,6 +84,10 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         OnConnect();
         PhotonNetwork.JoinRoom(_inputField.text);
     }
+    
+    public void JoinRoom(string roomName) => PhotonNetwork.JoinRoom(roomName);
+    
+    public void JoinRoom(RoomInfo room) => PhotonNetwork.JoinRoom(room.Name);
     
     public void GenerateNickname() => _nicknameInputField.text = GetRandomName();
     
@@ -125,7 +144,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     
     private bool DoesRoomExist(string roomName)
     {
-        if (LoadingSceneManager.CachedRoomList.TryGetValue(roomName, out var room))
+        if (LoadingSceneManager.Instance.CachedRoomList.TryGetValue(roomName, out var room))
             return !room.RemovedFromList;
         
         return false;
