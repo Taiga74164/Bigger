@@ -1,24 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public abstract class Menu<T> : MonoBehaviour where T : Menu<T>
+public abstract class Menu<T> : Singleton<T> where T : Menu<T>
 {
     private static T _instance;
     public static T Instance => _instance;
-    
-    protected virtual void Awake()
-    {
-        if (_instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        else
-        {
-            _instance = (T)this;   
-        }
-    }
     
     protected virtual void OnDestroy()
     {
@@ -26,8 +15,14 @@ public abstract class Menu<T> : MonoBehaviour where T : Menu<T>
             _instance = null;
     }
     
+    protected virtual void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+            Close();
+    }
+    
     public virtual void Open() => gameObject.SetActive(true);
-
+    
     public virtual void Close() => gameObject.SetActive(false);
 }
 

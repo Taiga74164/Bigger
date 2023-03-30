@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class LoadingSceneManager : MonoBehaviourPunCallbacks
+public class LoadingSceneManager : Singleton<LoadingSceneManager>
 {
     [HideInInspector]
-    public static Dictionary<string, RoomInfo> CachedRoomList = new Dictionary<string, RoomInfo>();
+    public Dictionary<string, RoomInfo> CachedRoomList = new Dictionary<string, RoomInfo>();
     
     #region Events
     
