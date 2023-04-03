@@ -16,10 +16,6 @@ public class RoomList : MonoBehaviourPunCallbacks
     private void Update()
     {
         UpdateRoomList();
-        foreach (var a in LoadingSceneManager.Instance.CachedRoomList.Values)
-        {
-            Debug.Log("room name "+ a.Name + ", max players " + a.MaxPlayers.ToString());
-        }
     }
     
     // ReSharper disable Unity.PerformanceAnalysis
@@ -51,9 +47,9 @@ public class RoomList : MonoBehaviourPunCallbacks
                 
                 // Set the room name.
                 newRoom.GetComponentInChildren<Room>().RoomName.SetText(room.Name + " (" + room.PlayerCount + "/" + room.MaxPlayers + ")");
-                
+
                 // Add a listener to the button to join the room.
-                newRoom.GetComponent<Button>().onClick.AddListener(() => MainMenuManager.Instance.JoinRoom(room));
+                newRoom.GetComponent<Button>().onClick.AddListener(() => newRoom.GetComponentInChildren<Room>().JoinRoom());
             }
         }
     }
