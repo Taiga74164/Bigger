@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Photon.Pun;
 
-public class Room : MonoBehaviour
+public class Room : MonoBehaviourPunCallbacks
 {
     public TMP_Text RoomName;
     
