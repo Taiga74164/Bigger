@@ -30,12 +30,15 @@ public class LoadingSceneManager : Singleton<LoadingSceneManager>
     public override void OnConnectedToMaster()
     {
         // Do stuff here. Can insert a loading screen, Game Title, etc.
+        Debug.Log("Connected to master.");
         PhotonNetwork.JoinLobby();
     }
     
     public override void OnJoinedLobby()
     {
         SceneManager.LoadScene("MainMenu");
+        
+        Debug.Log("Joined lobby.");
         
         // Destroy all children of this object to prevent UI from appearing in the next scene.
         foreach (var child in transform.GetComponentsInChildren<Transform>())
