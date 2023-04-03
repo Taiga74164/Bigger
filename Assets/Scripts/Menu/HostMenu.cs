@@ -16,7 +16,7 @@ public class HostMenu : Menu<HostMenu>
     [SerializeField] private TextMeshProUGUI _statusText, _errorText;
     
     private readonly float _dotInterval = 0.5f;
-    private int _numDots = 0;
+    private int _numDots;
     
     protected override void Update() => base.Update();
     
@@ -42,7 +42,7 @@ public class HostMenu : Menu<HostMenu>
         
         var roomOptions = new RoomOptions
         {
-            MaxPlayers = byte.Parse(_maxPlayersDropdown.value.ToString()),
+            MaxPlayers = byte.Parse(_maxPlayersDropdown.options[_maxScoreDropdown.value].text),
             CustomRoomProperties = new Hashtable
             {
                 { "MaxScore", _maxScoreDropdown.options[_maxScoreDropdown.value].text }
@@ -52,7 +52,7 @@ public class HostMenu : Menu<HostMenu>
             IsVisible = true
         };
         
-        PhotonNetwork.CreateRoom(_roomNameField.text);
+        PhotonNetwork.CreateRoom(_roomNameField.text, roomOptions);
     }
     
     private void OnConnect()
