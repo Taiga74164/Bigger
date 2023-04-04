@@ -5,10 +5,9 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using Random = UnityEngine.Random;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class HostMenu : Menu<HostMenu>
+public class HostMenu : Menu
 {
     [SerializeField] private TMP_InputField _roomNameField;
     [SerializeField] private TMP_Dropdown _maxPlayersDropdown;

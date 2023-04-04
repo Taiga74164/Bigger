@@ -6,5 +6,5 @@ public class JoinMenuOpener : MonoBehaviour
 {
     [SerializeField] private JoinMenu _joinMenu;
     
-    public void OpenMenu() => _joinMenu.Open();
+    public void OpenMenu() => _joinMenu.OpenMenu();
 }

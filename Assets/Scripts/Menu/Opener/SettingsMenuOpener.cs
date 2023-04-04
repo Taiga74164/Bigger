@@ -7,5 +7,5 @@ public class SettingsMenuOpener : MonoBehaviour
 {
     [SerializeField] private SettingsMenu _settingsMenuPrefab;
     
-    public void OpenMenu() => _settingsMenuPrefab.Open();
+    public void OpenMenu() => _settingsMenuPrefab.OpenMenu();
 }

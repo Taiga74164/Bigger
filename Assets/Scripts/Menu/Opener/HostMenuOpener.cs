@@ -6,5 +6,5 @@ public class HostMenuOpener : MonoBehaviour
 {
     [SerializeField] private HostMenu _hostMenu;
     
-    public void OpenMenu() => _hostMenu.Open();
+    public void OpenMenu() => _hostMenu.OpenMenu();
 }

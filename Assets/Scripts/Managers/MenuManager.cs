@@ -6,23 +6,22 @@ public class MenuManager : Singleton<MenuManager>
 {
     private Stack<Menu> _menuStack = new Stack<Menu>();
     
+    public bool IsMenuOpen => _menuStack.Count > 0;
+    
     /// <summary>
     /// Opens a specific menu and closes the previous menu.
     /// </summary>
     /// <param name="menu">The menu you want to close. This menu must inherit the Menu class</param>
     public void OpenMenu(Menu menu)
     {
-        if (menu.gameObject == null)
-            return;
-
         if (_menuStack.Count > 0)
         {
             // If the menu is already open, do nothing.
-            if (_menuStack.TryPeek(out var topMenu) && topMenu == menu)
+            if (_menuStack.Peek() == menu)
                 return;
 
             // Close the previous menu.
-            topMenu.Close();
+            _menuStack.Peek().Close();
         }
         
         // Open the menu.
@@ -44,11 +43,8 @@ public class MenuManager : Singleton<MenuManager>
         var topMenu = _menuStack.Pop();
         topMenu.Close();
         
+        // Open the previous menu.
         if (_menuStack.Count > 0)
-        {
-            // Open the previous menu.
-            var nextMenu = _menuStack.Peek();
-            nextMenu.Open();
-        }
+            _menuStack.Peek().Open();
     }
 }

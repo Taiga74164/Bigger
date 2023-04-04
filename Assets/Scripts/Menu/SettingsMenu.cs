@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingsMenu : Menu<SettingsMenu>
+public class SettingsMenu : Menu
 {
     [SerializeField] private Slider _masterVolumeSlider;
     [SerializeField] private Slider _brightnessSlider;
