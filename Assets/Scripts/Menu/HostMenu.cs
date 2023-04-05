@@ -41,7 +41,7 @@ public class HostMenu : Menu
         
         var roomOptions = new RoomOptions
         {
-            MaxPlayers = byte.Parse(_maxPlayersDropdown.options[_maxScoreDropdown.value].text),
+            MaxPlayers = byte.Parse(_maxPlayersDropdown.options[_maxPlayersDropdown.value].text),
             CustomRoomProperties = new Hashtable
             {
                 { "MaxScore", _maxScoreDropdown.options[_maxScoreDropdown.value].text }

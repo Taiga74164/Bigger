@@ -9,13 +9,15 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameManager : Singleton<GameManager>
 {
-    public float WinningCondition = 2.0f;
+    private float _winningCondition;
     private bool _gameOver;
     
     private Dictionary<int, PlayerData> _playerDataDict = new Dictionary<int, PlayerData>();
     
     #region Events
     
+    private void Start() => _winningCondition = float.Parse(PhotonNetwork.CurrentRoom.CustomProperties["MaxScore"].ToString());
+
     private void Update()
     {
         if (!_gameOver)
@@ -42,7 +44,8 @@ public class GameManager : Singleton<GameManager>
         // Update the player data dictionary.
         _playerDataDict[targetPlayer.ActorNumber] = playerData;
         
-        if (playerData.PlayerSize >= WinningCondition)
+        
+        if (playerData.PlayerSize >= _winningCondition)
         {
             Debug.Log($"Player {playerData.PlayerName} has won!");
             _gameOver = true;
@@ -51,7 +54,7 @@ public class GameManager : Singleton<GameManager>
     
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        // Get all player data.
+        // Remove the player data from the dictionary.
         _playerDataDict.Remove(otherPlayer.ActorNumber);
     }
     
