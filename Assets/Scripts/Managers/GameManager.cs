@@ -12,7 +12,7 @@ public class GameManager : Singleton<GameManager>
     private float _winningCondition;
     private bool _gameOver;
     
-    private Dictionary<int, PlayerData> _playerDataDict = new Dictionary<int, PlayerData>();
+    public Dictionary<int, PlayerData> PlayerDataDict = new Dictionary<int, PlayerData>();
     
     #region Events
     
@@ -42,7 +42,7 @@ public class GameManager : Singleton<GameManager>
         var playerData = PlayerData.Parser.ParseFrom(bytes);
         
         // Update the player data dictionary.
-        _playerDataDict[targetPlayer.ActorNumber] = playerData;
+        PlayerDataDict[targetPlayer.ActorNumber] = playerData;
         
         if (playerData.PlayerSize >= _winningCondition)
         {
@@ -54,7 +54,7 @@ public class GameManager : Singleton<GameManager>
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         // Remove the player data from the dictionary.
-        _playerDataDict.Remove(otherPlayer.ActorNumber);
+        PlayerDataDict.Remove(otherPlayer.ActorNumber);
     }
     
     #endregion
@@ -64,7 +64,7 @@ public class GameManager : Singleton<GameManager>
     //     foreach (var player in PhotonNetwork.PlayerList)
     //     {
     //         // Check if the player data dictionary already contains this player's data.
-    //         if (_playerDataDict.ContainsKey(player.ActorNumber))
+    //         if (PlayerDataDict.ContainsKey(player.ActorNumber))
     //             continue;
     //         
     //         // Get the updated player data.
@@ -74,7 +74,7 @@ public class GameManager : Singleton<GameManager>
     //         // Debug.Log($"Player {playerData.PlayerName} has size {playerData.PlayerSize}");
     //         
     //         // Add the player data to the dictionary.
-    //         _playerDataDict.Add(player.ActorNumber, playerData);
+    //         PlayerDataDict.Add(player.ActorNumber, playerData);
     //     }
     // }
 }
