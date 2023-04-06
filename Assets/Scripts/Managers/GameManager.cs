@@ -44,7 +44,6 @@ public class GameManager : Singleton<GameManager>
         // Update the player data dictionary.
         _playerDataDict[targetPlayer.ActorNumber] = playerData;
         
-        
         if (playerData.PlayerSize >= _winningCondition)
         {
             Debug.Log($"Player {playerData.PlayerName} has won!");

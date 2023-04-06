@@ -47,5 +47,11 @@ public static class PlayerPrefsManager
         set => PlayerPrefs.SetInt("FirstLaunch", value ? 1 : 0);
     }
     
+    public static string Nickname
+    {
+        get => PlayerPrefs.GetString("Nickname", "");
+        set => PlayerPrefs.SetString("Nickname", value);
+    }
+    
     public static void Save() => PlayerPrefs.Save();
 }
