@@ -6,7 +6,12 @@ public class MenuManager : Singleton<MenuManager>
 {
     private Stack<Menu> _menuStack = new Stack<Menu>();
     
-    public bool IsMenuOpen => _menuStack.Count > 0;
+    /// <summary>
+    /// Checks if the menuStack has any menus open and if the top menu is the same as the menu you want to check.
+    /// </summary>
+    /// <param name="menu">The menu.</param>
+    /// <returns>true or false.</returns>
+    public bool IsMenuOpen(Menu menu) => _menuStack.Count > 0 && _menuStack.Peek() == menu;
     
     /// <summary>
     /// Opens a specific menu and closes the previous menu.

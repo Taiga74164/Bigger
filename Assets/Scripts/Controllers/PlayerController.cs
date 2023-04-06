@@ -117,9 +117,12 @@ public class PlayerController : MonoBehaviour
     {
         if (!_photonView.IsMine)
             return;
+
+        if (GameManager.Instance.IsGamePaused)
+            return;
         
         _hasAnimator = TryGetComponent(out _animator);
-            
+        
         // Player movement.
         UpdatePosition();
         HandleVelocity();

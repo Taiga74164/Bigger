@@ -14,6 +14,14 @@ public class GameManager : Singleton<GameManager>
     
     public Dictionary<int, PlayerData> PlayerDataDict = new Dictionary<int, PlayerData>();
     
+    // private bool _isMultiplayer;
+    private bool _isGamePaused;
+    public bool IsGamePaused
+    {
+        get => _isGamePaused;
+        set => _isGamePaused = value;
+    }
+    
     #region Events
     
     private void Start() => _winningCondition = float.Parse(PhotonNetwork.CurrentRoom.CustomProperties["MaxScore"].ToString());
@@ -58,23 +66,4 @@ public class GameManager : Singleton<GameManager>
     }
     
     #endregion
-
-    // private void GetAllPlayerData()
-    // {
-    //     foreach (var player in PhotonNetwork.PlayerList)
-    //     {
-    //         // Check if the player data dictionary already contains this player's data.
-    //         if (PlayerDataDict.ContainsKey(player.ActorNumber))
-    //             continue;
-    //         
-    //         // Get the updated player data.
-    //         var bytes = (byte[]) player.CustomProperties["PlayerData"];
-    //         var playerData = PlayerData.Parser.ParseFrom(bytes);
-    //         
-    //         // Debug.Log($"Player {playerData.PlayerName} has size {playerData.PlayerSize}");
-    //         
-    //         // Add the player data to the dictionary.
-    //         PlayerDataDict.Add(player.ActorNumber, playerData);
-    //     }
-    // }
 }

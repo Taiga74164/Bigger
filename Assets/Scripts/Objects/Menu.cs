@@ -20,6 +20,8 @@ public abstract class Menu : Menu<Menu>
             CloseMenu();
     }
     
+    public bool IsOpen => MenuManager.Instance.IsMenuOpen(this);
+    
     public virtual void OpenMenu() => MenuManager.Instance.OpenMenu(this);
     
     public virtual void CloseMenu() => MenuManager.Instance.CloseMenu();
