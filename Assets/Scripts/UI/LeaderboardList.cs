@@ -9,47 +9,48 @@ public class LeaderboardList : MonoBehaviour
 {
     public GameObject LeaderboardItemPrefab;
     public Transform Content;
-    private SortedList<float, string> _leaderboardList = new SortedList<float, string>();
+    private Dictionary<int, GameObject> _leaderboardItems = new Dictionary<int, GameObject>();
     
-    private int _previousPlayerCount;
+    private void Start()
+    {
+        // Instantiate the Prefab for each player.
+        foreach (var playerData in GameManager.Instance.PlayerDataDict)
+        {
+            var listItem = Instantiate(LeaderboardItemPrefab, Content);
+            _leaderboardItems.Add(playerData.Key, listItem);
+        }
+    }
     
     private void Update()
     {
         UpdateLeaderboardList();
     }
     
+    // ReSharper disable Unity.PerformanceAnalysis
     private void UpdateLeaderboardList()
     {
-        if (GameManager.Instance.PlayerDataDict.Count == _previousPlayerCount)
-            return;
+        // Sort the PlayerData dictionary by PlayerSize in descending order.
+        var sortedPlayerData = GameManager.Instance.PlayerDataDict.OrderByDescending(x => x.Value.PlayerSize);
         
-        _previousPlayerCount = GameManager.Instance.PlayerDataDict.Count;
+        // Clear the existing leaderboard items. May cause performance issues.
+        foreach (var leaderboardItem in _leaderboardItems)
+            Destroy(leaderboardItem.Value);
+        _leaderboardItems.Clear();
         
-        // Clear the leaderboard list.
-        _leaderboardList.Clear();
-        
-        // Loop through the player data dictionary and add the player data to the leaderboard list.
-        foreach (var player in GameManager.Instance.PlayerDataDict)
+        // Update the values for each player in the leaderboard, sorted by player size.
+        var rank = 1;
+        foreach (var playerData in sortedPlayerData)
         {
-            // The key is the player size plus a small value to prevent duplicate keys. (very scuffed)
-            var key = player.Value.PlayerSize + (0.0001f * float.Parse(player.Value.PlayerID.ToString()));
-            _leaderboardList.Add(key, player.Value.PlayerName);
-        }
-        
-        UpdateUI();
-    }
-    
-    private void UpdateUI()
-    {
-        foreach (var player in _leaderboardList.Reverse())
-        {
-            // Instantiate a leaderboard item.
-            var leaderboardItem = Instantiate(LeaderboardItemPrefab, Content);
-            var leaderboardItemController = leaderboardItem.GetComponent<LeaderboardItem>();
+            // Instantiate a new Prefab for each player in the sorted player data.
+            var listItem = Instantiate(LeaderboardItemPrefab, Content);
+            _leaderboardItems.Add(playerData.Key, listItem);
             
-            // Set the player name and size.
-            leaderboardItemController.SetPlayerName((_leaderboardList.IndexOfKey(player.Key) + 1).ToString() + ". " + player.Value);
-            // leaderboardItemController.SetPlayerSize(player.Key);
+            // Get the LeaderboardItem component and set the player name.
+            var leaderboardItem = listItem.GetComponent<LeaderboardItem>();
+            leaderboardItem.SetPlayerName($"{rank}. {playerData.Value.PlayerName}");
+            
+            // Increment the rank for the next player.
+            rank++;
         }
     }
 }

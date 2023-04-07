@@ -5,9 +5,9 @@ using Photon.Pun;
 
 public class GameMenu : Menu
 {
-    public void OnEnable() => GameManager.Instance.IsGamePaused = true;
+    public override void OnEnable() => GameManager.Instance.IsGamePaused = true;
     
-    public void OnDisable() => GameManager.Instance.IsGamePaused = false;
+    public override void OnDisable() => GameManager.Instance.IsGamePaused = false;
     
     protected override void Update() => base.Update();
     
