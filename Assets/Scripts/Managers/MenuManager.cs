@@ -19,15 +19,15 @@ public class MenuManager : Singleton<MenuManager>
     /// <param name="menu">The menu you want to close. This menu must inherit the Menu class</param>
     public void OpenMenu(Menu menu)
     {
-        if (_menuStack.Count > 0)
-        {
-            // If the menu is already open, do nothing.
-            if (_menuStack.Peek() == menu)
-                return;
-
-            // Close the previous menu.
-            _menuStack.Peek().Close();
-        }
+        // if (_menuStack.Count > 0)
+        // {
+        //     // If the menu is already open, do nothing.
+        //     if (_menuStack.Peek().Equals(menu))
+        //         return;
+        //     
+        //     // Close the previous menu.
+        //     _menuStack.Peek().Close();
+        // }
         
         // Open the menu.
         menu.Open();

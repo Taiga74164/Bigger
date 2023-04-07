@@ -9,7 +9,7 @@ public class GameMenuOpener : MonoBehaviour
     
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Escape) && !_gameMenu.IsOpen)
+        if (Input.GetKeyUp(KeyCode.Escape) && !_gameMenu.IsOpen && !GameManager.Instance.IsGamePaused)
             OpenGameMenu();
     }
     
