@@ -10,8 +10,8 @@ public class GameOver : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TMP_Text _winnerText;
     [SerializeField] private TMP_Text _continueText;
-    
-    private void OnEnable()
+
+    public override void OnEnable()
     {
         if (!GameManager.Instance.IsGameOver)
             return;

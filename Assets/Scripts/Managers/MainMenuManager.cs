@@ -22,7 +22,7 @@ public class MainMenuManager : Singleton<MainMenuManager>
         // Show the cursor from view.
         Cursor.visible = true;
     }
-
+    
     #endregion
     
     #region Photon Callbacks
