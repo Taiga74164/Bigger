@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using ExitGames.Client.Photon;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
@@ -11,6 +10,7 @@ public class GameManager : Singleton<GameManager>
 {
     private float _winningCondition;
     private bool _gameOver;
+    public bool IsGameOver => _gameOver;
     
     public Dictionary<int, PlayerData> PlayerDataDict = new Dictionary<int, PlayerData>();
     
@@ -22,6 +22,10 @@ public class GameManager : Singleton<GameManager>
         set => _isGamePaused = value;
     }
     
+    private PlayerData _winner;
+    public PlayerData Winner => _winner;
+    [SerializeField] private GameObject _gameOverScreen;
+    
     #region Events
     
     private void Start() => _winningCondition = float.Parse(PhotonNetwork.CurrentRoom.CustomProperties["MaxScore"].ToString());
@@ -31,9 +35,7 @@ public class GameManager : Singleton<GameManager>
         if (!_gameOver)
             return;
         
-        // ToDo:
-        // - Show game over screen.
-        // - Reset the game or return to the main menu.
+        _gameOverScreen.SetActive(true);
     }
     
     #endregion
@@ -52,9 +54,10 @@ public class GameManager : Singleton<GameManager>
         // Update the player data dictionary.
         PlayerDataDict[targetPlayer.ActorNumber] = playerData;
         
-        if (playerData.PlayerSize >= _winningCondition)
+        if (playerData.PlayerSize >= _winningCondition && !_gameOver && _winner == null)
         {
             Debug.Log($"Player {playerData.PlayerName} has won!");
+            _winner = playerData;
             _gameOver = true;
         }
     }
@@ -65,5 +68,11 @@ public class GameManager : Singleton<GameManager>
         PlayerDataDict.Remove(otherPlayer.ActorNumber);
     }
     
+    #endregion
+
+    #region Methods
+    
+    
+
     #endregion
 }

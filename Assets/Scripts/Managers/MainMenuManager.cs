@@ -15,9 +15,12 @@ public class MainMenuManager : Singleton<MainMenuManager>
     
     #region Events
     
-    public void Update()
+    private void Start()
     {
-        //
+        // Set the cursor to be visible.
+        Cursor.lockState = CursorLockMode.None;
+        // Show the cursor from view.
+        Cursor.visible = true;
     }
 
     #endregion

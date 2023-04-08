@@ -33,8 +33,8 @@ public class UIController : MonoBehaviour
     
     private void UpdateCursorStatus()
     {
-        // Check the cursor input action.
-        var cursor = _showCursor.ReadValue<float>() > 0;
+        // Check the cursor input action or if the game is paused.
+        var cursor = GameManager.Instance.IsGamePaused || _showCursor.ReadValue<float>() > 0;
         
         // Update the cursor properties.
         Cursor.visible = cursor;
