@@ -8,7 +8,7 @@
 
 <br>
 
-"Bigger" is a thrilling game where you take on the role of a frog on a rampage through the city. As you destroy buildings, you grow in size and power, becoming even more unstoppable. With limited time to wreak havoc, your goal is to cause as much destruction as possible to earn a high score and dominate the leaderboard.
+"Bigger" is a thrilling game where you control a frog born from a forbidden experiment that grows bigger by rampaging through the buildings. As a result, your frog will become even more unstoppable. With limited time to wreak havoc as other frogs race you to break the finite buildings Earth has to offer, your goal is to become the biggest froggo there ever was and dominate the world.
 
 ---
 
